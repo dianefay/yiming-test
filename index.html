@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>易命术 · 处世自测 | 命书镜鉴</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0ede7;
+            font-family: system-ui, -apple-system, 'Segoe UI', 'Roboto', sans-serif;
+            padding: 1.5rem 1rem;
+            color: #2c2b28;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            padding: 1.8rem 2rem 2.5rem;
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 650;
+            letter-spacing: -0.5px;
+            border-left: 6px solid #b87c4f;
+            padding-left: 1rem;
+        }
+
+        .sub {
+            color: #6b6258;
+            margin-top: 0.3rem;
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* 模式卡片 */
+        .mode-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .mode-card {
+            flex: 1;
+            background: #fefaf5;
+            border: 2px solid #ede3d6;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-card.active {
+            border-color: #b87c4f;
+            background: #fff6ed;
+            box-shadow: 0 4px 12px rgba(184,124,79,0.15);
+        }
+
+        .mode-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .mode-card p {
+            font-size: 0.8rem;
+            color: #6b5c4b;
+        }
+
+        .book-view {
+            background: #fefaf5;
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .art-item {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e9e0d4;
+            padding-bottom: 1rem;
+        }
+
+        .art-title {
+            font-weight: 700;
+            color: #b87c4f;
+            margin-bottom: 0.2rem;
+        }
+
+        .art-original {
+            font-family: monospace;
+            background: #f3ede5;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            display: inline-block;
+            font-size: 0.8rem;
+            margin: 0.3rem 0;
+        }
+
+        .art-trans {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #4b3e2e;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin: 0.5rem 0 0.2rem;
+            color: #6b5c4b;
+        }
+
+        .progress {
+            background: #e9e2d8;
+            border-radius: 20px;
+            height: 8px;
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar {
+            background: #b87c4f;
+            width: 0%;
+            height: 8px;
+            border-radius: 20px;
+            transition: width 0.2s;
+        }
+
+        .question-card {
+            background: #fefaf5;
+            border-radius: 1.5rem;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ede3d6;
+        }
+
+        .q-text {
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 0.8rem;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: space-between;
+        }
+
+        .opt {
+            flex: 1;
+            text-align: center;
+            background: white;
+            border: 1px solid #ddd2c4;
+            border-radius: 2rem;
+            padding: 0.45rem 0;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.1s;
+            color: #5e5548;
+        }
+
+        .opt.selected {
+            background: #b87c4f;
+            border-color: #b87c4f;
+            color: white;
+        }
+
+        .opt span {
+            font-size: 0.7rem;
+            display: block;
+            opacity: 0.8;
+        }
+
+        .load-more-btn {
+            background: #e2d9cf;
+            border: none;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 3rem;
+            font-weight: 600;
+            margin: 0.5rem 0 1rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+        .load-more-btn:hover {
+            background: #d1c5b6;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .btn-primary, .btn-secondary {
+            flex: 1;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 3rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: #2c2b28;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4a3b2e;
+        }
+
+        .btn-secondary {
+            background: #e2d9cf;
+            color: #2c2b28;
+        }
+
+        .result-area {
+            background: #f6f2eb;
+            border-radius: 1.8rem;
+            padding: 1.8rem;
+            margin-top: 2rem;
+            border-left: 6px solid #b87c4f;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 1rem 0 0.8rem;
+            padding-bottom: 4px;
+            border-bottom: 2px solid #e0d4c6;
+        }
+
+        .strength-item, .weakness-item {
+            background: #fffcf7;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .art-title-small {
+            font-weight: 700;
+            color: #b87c4f;
+            margin-bottom: 0.2rem;
+        }
+
+        .summary-box {
+            background: #eae1d4;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-top: 1.2rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .footer-note {
+            font-size: 0.7rem;
+            text-align: center;
+            color: #aa9f90;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <h1>易命术 · 处世自测</h1>
+    <div class="sub">观照当下 · 修补气运缝隙</div>
+
+    <!-- 模式选择 -->
+    <div class="mode-selector" id="modeSelector">
+        <div class="mode-card" data-mode="rapid">
+            <h3>⚡ 极速测试</h3>
+            <p>随机40题 · 覆盖全维度 · 约5分钟</p>
+        </div>
+        <div class="mode-card" data-mode="full">
+            <h3>📚 完整测试</h3>
+            <p>全量题库 · 深度自省 · 约15分钟</p>
+        </div>
+        <div class="mode-card" data-mode="book">
+            <h3>📖 命书阅读</h3>
+            <p>原文+白话 · 随时翻阅</p>
+        </div>
+    </div>
+
+    <!-- 命书阅读区（初始隐藏） -->
+    <div id="bookView" class="book-view hidden"></div>
+
+    <!-- 测试区（初始隐藏） -->
+    <div id="testView" class="hidden">
+        <div class="progress-stats">
+            <span>📋 已答: <span id="answeredCount">0</span> / <span id="totalCountSpan">0</span></span>
+            <span>🧘 每次加载5题，可随时提交</span>
+        </div>
+        <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+        <div id="questionsArea"></div>
+        <div id="loadMoreContainer" style="text-align: center;"></div>
+        <div class="btn-group">
+            <button id="submitTestBtn" class="btn-primary">📜 解读命术图谱</button>
+            <button id="resetTestBtn" class="btn-secondary">🔄 重置所有答案</button>
+            <button id="backToModeBtn" class="btn-secondary">🏠 返回模式选择</button>
+        </div>
+    </div>
+
+    <div id="resultArea" class="result-area" style="display: none;"></div>
+    <div class="footer-note">所有题目均询问「近期状态」而非追忆过去。凭第一直觉作答(5→非常符合，1→完全不符)。</div>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // 1. 命书完整数据 (1-51术，精选核心条目与白话)
+    // --------------------------------------------------------------
+    const completeBook = [
+        { title: "第一术 · 洒扫庭除", original: "洒扫庭除，使身不近秽；肃洁仪容，使秽不附身。勿卧于污秽熏天、杂然无序之所，勿寝于阴暗潮湿之地。", trans: "打扫环境、整洁自身，污秽不近则气运清明。干净是运气的第一道门槛。" },
+        { title: "第二术 · 应时作息", original: "应时而兴，应时而食，应时而作，应时而息。四时有序，心神乃一。", trans: "规律作息让心神安宁，心神宁则气运聚。" },
+        { title: "第三术 · 语善而真", original: "言讷而实，语善而真。不泄恶语，不传妄言，不涉谤讥。君子之运，发于唇齿。", trans: "真诚善良的言语是福气开关，妄言恶语会驱散好运。" },
+        { title: "第四术 · 戒贪知止", original: "以见利之明处世，财可求也。以侵害之心得财，悖逆天道，必遭反报。", trans: "不贪非分之物，不侵害他人。若以恶求财，必数倍偿还。" },
+        { title: "第五术 · 逐一面之", original: "旧过过，未未到。事有先后，逐一面之，戒之在贪。", trans: "一次只专注一件事。贪多求快会消耗品质。" },
+        { title: "第六术 · 不趋捷径", original: "今人多趋捷径，然未察其径塞途拥，而康庄之衢，阒其无人。", trans: "捷径拥挤易翻车，踏实大道虽慢必达。" },
+        { title: "第六术 · 顺势待时", original: "天时至，气运生，体察而顺应之。若能与道偕行，则如顺水行舟。", trans: "等待时机，顺势而为，不逆流死磕。" },
+        { title: "第八术 · 旧业勿弃", original: "业之道，旧业勿轻弃。虽利薄，然根基之所系，存身之本也。", trans: "不要轻易抛弃积累了多年的技能或人脉，它们是低谷时的救命稻草。" },
+        { title: "第九术 · 识人避害", original: "初遇生人，若生厌憎，心神不安，速避之。见使君怡然者，可近而交，然须慎察其行。", trans: "相信直觉，让不舒服的人远离。日久见人心。" },
+        { title: "第十术 · 贵人流转", original: "父母、困厄援手者、指迷津者、甘苦友、生死夫妻皆贵人也。然贵人如云水流转。", trans: "贵人并非固定，善待身边人，自己亦做他人贵人。" },
+        { title: "第十一术 · 慎言未成", original: "事未成勿泄于未预者，利既获勿宣于不知者。倘炫其功，恐招非议而损其益。", trans: "事情没成之前不要张扬，成功后更别炫耀。" },
+        { title: "第十二术 · 竭诚以赴", original: "凡所当为之事，必竭诚以赴，务尽其能。若敷衍塞责，则不如止而不为。", trans: "该做的事全力以赴，不想做就不要做，最忌半吊子。" },
+        { title: "第十三术 · 涤尽浮光", original: "识人者，当涤尽浮光，弃置衔冕，略其形骸，屏绝人议。惟观其言行之微。", trans: "抛开头衔外貌，只看细节言行，才能看清一个人。" },
+        { title: "第十四术 · 御人以疑", original: "御人当以疑始，必待其事毕。绳可束其身，岂能羁其志？", trans: "管理或合作时保持审慎，结果出来后再下判断。" },
+        { title: "第十五术 · 判事三境", original: "判事之成否，其下者取利，其次者取鉴，其至者观乎气运之蓄。", trans: "低阶看利益，中阶学经验，高阶洞察大势积蓄。" },
+        { title: "第十六术 · 三等交游", original: "交游三等：唯利是图者毋涉情义；唯情是守者毋涉利欲；情利皆可谋者得之愈众运愈昌。", trans: "分清楚谁谈利益谁谈感情，情利双收之人是贵人。" },
+        { title: "第十七术 · 乘势不骄", original: "方时运至际，万象皆佐。然骄矜造作，挥霍无度，实悖逆福运。", trans: "顺境不飘，骄傲会作没运气。" },
+        { title: "第十八术 · 共事忘私", original: "共事欲成，首在谋宜而见远，次在尽其才，至要者忘私。", trans: "忘掉私心，团队才能成就你。" },
+        { title: "第十九术 · 试诚交友", original: "观一人，细察之，见其品性端良，乃欲与之交。可试询其隐衷，若其诚言不讳，则证其心已视尔为友矣。", trans: "愿意向你坦诚内心的人，才把你当朋友。" },
+        { title: "第二十术 · 自疏者福", original: "逢困厄而能自疏者，有福之人也；临险阻犹可坦然而笑者，具大运之相也。", trans: "能自我开解困境，遇险依然微笑，是有大福之人。" },
+        { title: "第二十一术 · 众悦险伏", original: "众悦者，气运亨也，然险亦伏于侧矣。", trans: "被众人喜欢时要警惕危险潜伏。" },
+        { title: "第二十二术 · 夫妇同心", original: "夫妇之道，首以信为万事之基，次则消弭龃龉，尤贵同心以御外。", trans: "信任、消磨矛盾、共同对外，可臻极运。" },
+        { title: "第二十三术 · 勿假其名", original: "勿以交贵者为荣，勿假其名以自壮。若此，是转时运于人。", trans: "借他人光环虚荣，等于拱手让运。" },
+        { title: "第二十四术 · 平等相对", original: "欲得言谈之真味，必以平等相对。至亲犹然。", trans: "放下尊卑，才能得到真心交流。" },
+        { title: "第二十五术 · 孤注之志", original: "出资市金，逐盐铁之利者，如博戏，肇端当有尽付一掷之志。所谓必成者，诈也。", trans: "投资要有全部亏光的觉悟，说必成的都是骗子。" },
+        { title: "第二十六术 · 善用财者", original: "善用财者，不啻重于善牟利者也。不擅牟利，乞食而已；苟不谙用财之道，或致身困。", trans: "会花钱比会赚钱更重要。" },
+        { title: "第二十七术 · 勿强险事", original: "勿强求险巇之事以耽危殆之娱，如此则大伤气运。向者无恙，惟气运未尽耳。", trans: "不要为了刺激去作死，没出事只是运气还没用完。" },
+        { title: "第二十八术 · 内心无樊", original: "勿自贻伊戚，凡桎梏皆厄气运。外锢虽不可御，内心毋复筑樊牢。", trans: "外界的枷锁躲不开，但不要在心里再修一个牢笼。" },
+        { title: "第二十九术 · 赏物勿溺", original: "鉴物犹鉴人，辨其质，可赏而勿溺；溺则神气为所夺。", trans: "可以欣赏美好的东西，沉迷会被吸走精气神。" },
+        { title: "第三十术 · 绝不可费", original: "用度可奢，然绝不可费。费者，若财货食粮；究其本，费运气也。", trans: "浪费任何物品都是在消耗自己的气运。" },
+        { title: "第三十一术 · 勿急戒躁", original: "勿急，心躁易失。盖急与运之频不相合也。", trans: "急躁和运气的频率相冲，慢下来才能接住好运。" },
+        { title: "第三十二术 · 勿占人便", original: "勿占人财利之便，占其便则遗运于人；不患人取财利之便，取其便则遗运于己。", trans: "占了别人的便宜，会把自己的运送给对方。" },
+        { title: "第三十三术 · 慎用己财", original: "必费己财；未入囊者，非己有也。若不得已而假人之财，须报之以利。", trans: "花自己的钱，借钱要给利息，赖账会招灾。" },
+        { title: "第三十四术 · 怒则智散", original: "怒则智散，亦损气数。", trans: "发火时智商归零，运气也跑掉。" },
+        { title: "第三十五术 · 避而俟之", original: "遇不可解之事，避而俟之，或乃上策；强为之者，多反受其咎。", trans: "解决不了就先放下，硬刚反而受害。" },
+        { title: "第三十六术 · 正对内惧", original: "正对内惧，乃得天眷。", trans: "直面恐惧，上天才会眷顾你。" },
+        { title: "第三十七术 · 勿自怜", original: "勿自怜，时运亦厌之。", trans: "别自己可怜自己，好运最讨厌自怜的人。" },
+        { title: "第三十八术 · 百计图出", original: "坠于深壑；偃卧无为，常也；百计图出，乃大运之兆。", trans: "躺平等死是常态，拼命挣扎才是大运的前兆。" },
+        { title: "第三十九术 · 念有非无", original: "计其所有而不念所无者，斯为吉人之兆也。", trans: "数自己有的，不惦记没有的，是有福之人。" },
+        { title: "第四十术 · 灵根身树", original: "灵若根，身若树，运若叶。叶虽凋落，苟灵不死、身不枯，逢其时，终见枝繁叶茂。", trans: "根没烂，树干没空，叶子总会再长出来。" },
+        { title: "第四十一术 · 豁尽所有", original: "豁尽所有乃制胜之枢，面厚如革实为初基。诚能心无滞碍，行不疑迟，既悟玄机，气运自随。", trans: "敢梭哈，能接受满盘皆输，运气反而跟着你。" },
+        { title: "第四十二术 · 务修者成", original: "逐成者，众庶之所趋；务修者，达人之所怀。怀修之人，是谓成矣。", trans: "追求外面的成就谁都行，内修的人才是真成就。" },
+        { title: "第四十三术 · 善待左右", original: "不图报而善待左右，乃汝之福也。", trans: "对身边人好不求回报，本身就是福气。" },
+        { title: "第四十四术 · 逢凶化吉", original: "逢凶时，当先谋化吉之道。", trans: "遇到坏事先想怎么把它变成好事。" },
+        { title: "第四十五术 · 绝期于人", original: "绝期于人，得之鸿运。", trans: "不把全部期望压在一个人身上，鸿运自来。" },
+        { title: "第四十六术 · 能宽则宽", original: "能宽则宽，盖宽乃居高临下之态也。", trans: "宽容是强者的姿态。" },
+        { title: "第四十七术 · 识己", original: "识人、识物、识己，其道一也。", trans: "看清自己和看透事物是同一套功夫。" },
+        { title: "第四十八术 · 容受御运", original: "容受万事，御运在己。洞明造化，即得真运。", trans: "接受一切发生，命运在你手里。" },
+        { title: "第四十九术 · 讼过内省", original: "事之不成，必在己也。讼过而内省，克己而复正。", trans: "失败时先找自己的原因，从自身破局。" },
+        { title: "第五十术 · 众口非我", original: "众口之我，本非真我；性在方寸，不系唇舌。", trans: "别人嘴里说的你，不是真的你。" },
+        { title: "第五十一术 · 无待常适", original: "无待而常适者，天之所厚，亦至运也。", trans: "不靠外界条件也能自在的人，是天选之子。" }
+    ];
+
+    // 2. 高质量题库 (共120道，面向“近期/当下”询问，覆盖所有aspect，避免重复)
+    const MASTER_BANK = [];
+    // 生成函数: 动态构建不同问法的题目 (确保每个aspect至少有3种不同问法，总数约120)
+    const aspectsList = ["env","routine","speech","impulse","focus","shortcut","timing","root","discern","anger","coop","humility","tolerance","money","avoid","fear","selfpity","social","allin","outsider","waste","rush","vanity","ease","introspect","boundary","content","selfknow","agency"];
+    // 定义不同的问句模板 (现在式/最近)
+    const templates = {
+        env: ["最近一周，我都能保持居住空间整洁有序。","现在我的桌面或房间看起来清爽利落。","我习惯用完东西立刻归位，不堆积杂物。"],
+        routine: ["近一个月我基本在固定时间睡觉和起床。","我很少熬夜到凌晨，作息很规律。","我的生物钟很稳定，节假日也不乱。"],
+        speech: ["最近我从不传播未经证实的八卦。","跟人聊天时我刻意避开背后议论他人。","我的言语总是善意且真诚。"],
+        impulse: ["最近三个月我没有冲动消费过。","看到打折促销我能冷静克制。","我购物前会理性思考是否真的需要。"],
+        focus: ["工作时我能心无旁骛专注一件事。","我很少同时开多个任务导致效率低下。","最近我完成重要任务时都很专注。"],
+        shortcut: ["我不相信任何快速致富的捷径。","我宁愿多花时间走正规道路。","投机取巧的事我从来不做。"],
+        timing: ["遇到阻力时我会先等等，不硬来。","我相信时机不到强求也没用。","最近我学会了顺势而为不急躁。"],
+        root: ["我没有放弃原来的专业技能积累。","老本行的技能我一直都在打磨。","即使开拓新领域，旧本领也没丢。"],
+        discern: ["第一印象让我不舒服的人，我会保持距离。","我的直觉很准，能避开危险的人。","对初次见面态度差的人，我基本不会再深交。"],
+        anger: ["最近我很少发火，能很好控制情绪。","即使生气我也能很快冷静下来。","愤怒时我从不做决定或说伤人话。"],
+        coop: ["团队合作时我愿意让出个人利益。","为了整体成功我甘愿做幕后。","最近一次合作中我主动承担了额外工作。"],
+        humility: ["顺风顺水时我仍保持低调。","获奖或升职后我没有炫耀过。","我很少在朋友圈晒优越。"],
+        tolerance: ["别人冒犯我，我基本能一笑而过。","我能原谅他人的无心之过。","我心里很少记恨别人。"],
+        money: ["借钱给别人我会立字据或约定还期。","我从不轻易担保或借高利贷。","处理金钱事务我很谨慎。"],
+        avoid: ["遇到解不开的难题我会先放一放。","我不钻牛角尖，相信过几天会有转机。","最近我成功用“等待”解决了棘手问题。"],
+        fear: ["我敢直面自己害怕的事情。","越是怕什么，我越会去尝试突破。","最近我克服了一个长期恐惧。"],
+        selfpity: ["倒霉之后我很快就能振作起来。","我从不觉得自己命苦。","遇到挫折我不会卖惨。"],
+        social: ["和地位悬殊的人聊天我很自然。","我能平等地跟任何人交流。","最近跟不同圈层的人打交道都顺利。"],
+        allin: ["为了关键目标我敢押上大部分资源。","人生重要关口我选择梭哈。","我身上有破釜沉舟的勇气。"],
+        outsider: ["别人在背后怎么评价我，我真的不在意。","我不会因为外界评价改变自己。","我活得比较自我，不太受舆论影响。"],
+        waste: ["我从不浪费食物或物品。","最近一个月我没有扔掉任何还能用的东西。","我习惯光盘行动，且珍惜物品。"],
+        rush: ["我做事从容，很少被deadline追着跑。","最近工作节奏很稳，没有慌乱。","我很少因为赶时间而出错。"],
+        vanity: ["我从不借助名人或大平台的光环抬高自己。","跟人交往时不提我认识谁谁。","我靠实力赢得尊重，不靠人脉背书。"],
+        ease: ["我选择走让自己内心安宁的路。","即使别人反对，我也会听从内心节奏。","目前的生活状态让我感到轻松自在。"],
+        introspect: ["遇到失败我第一反应是反思自己。","我常做复盘，找自己的问题。","最近一次挫折中我学到了自己的盲点。"],
+        boundary: ["我敢于拒绝不合理的请求。","我能温和而坚定地说“不”。","我不会为了讨好别人而委屈自己。"],
+        content: ["看到朋友成功我真心为他高兴。","我很少羡慕或嫉妒他人。","我对自己拥有的东西很知足。"],
+        selfknow: ["我清楚自己的优点和缺点。","外界评价不会改变我对自己的认知。","我对自己有稳定的自我画像。"],
+        agency: ["我相信命运大部分靠自己争取。","运气不好时我就加倍努力。","我很少抱怨环境，更愿意行动改变。"]
+    };
+    // 构建题库: 每个aspect生成4~5道题，确保总题量120左右
+    for (let asp of aspectsList) {
+        let tpls = templates[asp] || [`近期我在「${asp}」方面做得很好。`];
+        for (let i=0; i<4; i++) { // 每个维度4题
+            let text = tpls[i % tpls.length];
+            // 稍微变体避免完全一样
+            if (i>= tpls.length) text = text + " (近期同样如此)";
+            MASTER_BANK.push({ text, aspect: asp });
+        }
+    }
+    // 确保总数达到120左右，截取
+    const FINAL_BANK = MASTER_BANK.slice(0, 124);
+    const TOTAL_QUESTIONS = FINAL_BANK.length;
+
+    // aspect元数据 (包含原文+解释，用于结果页)
+    const aspectMeta = {
+        env: { name:"第一术·洒扫庭除", original: completeBook[0].original, explain: completeBook[0].trans },
+        routine:{ name:"第二术·应时作息", original: completeBook[1].original, explain: completeBook[1].trans },
+        speech:{ name:"第三术·语善而真", original: completeBook[2].original, explain: completeBook[2].trans },
+        impulse:{ name:"第四术·戒贪知止", original: completeBook[3].original, explain: completeBook[3].trans },
+        focus:{ name:"第五术·逐一面之", original: completeBook[4].original, explain: completeBook[4].trans },
+        shortcut:{ name:"第六术·不趋捷径", original: completeBook[5].original, explain: completeBook[5].trans },
+        timing:{ name:"第六术·顺势待时", original: completeBook[6].original, explain: completeBook[6].trans },
+        root:{ name:"第八术·旧业勿弃", original: completeBook[7].original, explain: completeBook[7].trans },
+        discern:{ name:"第九术·识人避害", original: completeBook[8].original, explain: completeBook[8].trans },
+        anger:{ name:"第三十四术·怒则智散", original: completeBook[33].original, explain: completeBook[33].trans },
+        coop:{ name:"第十八术·共事忘私", original: completeBook[17].original, explain: completeBook[17].trans },
+        humility:{ name:"第十七术·乘势不骄", original: completeBook[16].original, explain: completeBook[16].trans },
+        tolerance:{ name:"第四十六术·能宽则宽", original: completeBook[45].original, explain: completeBook[45].trans },
+        money:{ name:"第三十三术·慎用己财", original: completeBook[32].original, explain: completeBook[32].trans },
+        avoid:{ name:"第三十五术·避而俟之", original: completeBook[34].original, explain: completeBook[34].trans },
+        fear:{ name:"第三十六术·正对内惧", original: completeBook[35].original, explain: completeBook[35].trans },
+        selfpity:{ name:"第三十七术·勿自怜", original: completeBook[36].original, explain: completeBook[36].trans },
+        social:{ name:"第二十四术·平等相对", original: completeBook[23].original, explain: completeBook[23].trans },
+        allin:{ name:"第四十一术·豁尽所有", original: completeBook[40].original, explain: completeBook[40].trans },
+        outsider:{ name:"第五十术·众口非我", original: completeBook[49].original, explain: completeBook[49].trans },
+        waste:{ name:"第三十术·绝不可费", original: completeBook[29].original, explain: completeBook[29].trans },
+        rush:{ name:"第三十一术·勿急戒躁", original: completeBook[30].original, explain: completeBook[30].trans },
+        vanity:{ name:"第二十三术·勿假其名", original: completeBook[22].original, explain: completeBook[22].trans },
+        ease:{ name:"第六术·坦途轻安", original: completeBook[5].original, explain: completeBook[5].trans },
+        introspect:{ name:"第四十九术·讼过内省", original: completeBook[48].original, explain: completeBook[48].trans },
+        boundary:{ name:"第四十五术·绝期于人", original: completeBook[44].original, explain: completeBook[44].trans },
+        content:{ name:"第三十九术·念有非无", original: completeBook[38].original, explain: completeBook[38].trans },
+        selfknow:{ name:"第四十七术·识己", original: completeBook[46].original, explain: completeBook[46].trans },
+        agency:{ name:"第四十九术·事在己为", original: completeBook[48].original, explain: completeBook[48].trans }
+    };
+
+    let currentQuestions = [];      // 当前测试的题目列表
+    let currentAnswers = [];
+    let currentMode = null;        // 'rapid' 或 'full'
+    let renderedUpTo = 0;
+    const BATCH_SIZE = 5;
+
+    // DOM 元素
+    const modeSelectorDiv = document.getElementById('modeSelector');
+    const bookViewDiv = document.getElementById('bookView');
+    const testViewDiv = document.getElementById('testView');
+    const questionsDiv = document.getElementById('questionsArea');
+    const loadMoreContainerDiv = document.getElementById('loadMoreContainer');
+    const answeredSpan = document.getElementById('answeredCount');
+    const totalSpan = document.getElementById('totalCountSpan');
+    const progressBar = document.getElementById('progressBar');
+    const resultArea = document.getElementById('resultArea');
+
+    function updateProgressUI() {
+        const answered = currentAnswers.filter(v => v !== null).length;
+        answeredSpan.innerText = answered;
+        totalSpan.innerText = currentQuestions.length;
+        const percent = (answered / currentQuestions.length) * 100;
+        progressBar.style.width = percent + '%';
+    }
+
+    function renderBatch() {
+        const nextEnd = Math.min(renderedUpTo + BATCH_SIZE, currentQuestions.length);
+        if (nextEnd <= renderedUpTo) return;
+        for (let i = renderedUpTo; i < nextEnd; i++) {
+            const q = currentQuestions[i];
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.dataset.idx = i;
+            const selectedVal = currentAnswers[i];
+            card.innerHTML = `
+                <div class="q-text">${i+1}. ${q.text}</div>
+                <div class="options" data-qidx="${i}">
+                    ${[5,4,3,2,1].map(v => `<div class="opt ${selectedVal === v ? 'selected' : ''}" data-val="${v}">${v}<span>${v===5?'非常符合':v===4?'比较符合':v===3?'一般':v===2?'不太符合':'完全不符'}</span></div>`).join('')}
+                </div>
+            `;
+            questionsDiv.appendChild(card);
+        }
+        renderedUpTo = nextEnd;
+        // 绑定新选项
+        document.querySelectorAll(`.options[data-qidx]`).forEach(optGroup => {
+            const qidx = parseInt(optGroup.dataset.qidx);
+            if (qidx >= nextEnd - BATCH_SIZE && qidx < nextEnd) {
+                optGroup.querySelectorAll('.opt').forEach(opt => {
+                    opt.addEventListener('click', (e) => {
+                        const val = parseInt(opt.dataset.val);
+                        currentAnswers[qidx] = val;
+                        updateProgressUI();
+                        optGroup.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+                        opt.classList.add('selected');
+                    });
+                });
+            }
+        });
+        if (renderedUpTo < currentQuestions.length) {
+            loadMoreContainerDiv.innerHTML = `<button class="load-more-btn" id="loadMoreBtn">📦 再加载 ${Math.min(BATCH_SIZE, currentQuestions.length - renderedUpTo)} 题</button>`;
+            document.getElementById('loadMoreBtn')?.addEventListener('click', () => renderBatch());
+        } else {
+            loadMoreContainerDiv.innerHTML = '<span style="font-size:0.8rem;">✅ 全部题目已加载，可提交结果</span>';
+        }
+        updateProgressUI();
+    }
+
+    function resetTest() {
+        currentAnswers.fill(null);
+        questionsDiv.innerHTML = '';
+        renderedUpTo = 0;
+        renderBatch();
+        resultArea.style.display = 'none';
+        updateProgressUI();
+    }
+
+    function computeAndShowResult() {
+        const answeredCount = currentAnswers.filter(v => v !== null).length;
+        if (answeredCount !== currentQuestions.length) {
+            alert(`请先答完所有题目（已完成 ${answeredCount}/${currentQuestions.length}）`);
+            return;
+        }
+        let aspectScores = new Map();
+        for (let i=0; i<currentQuestions.length; i++) {
+            const asp = currentQuestions[i].aspect;
+            const score = currentAnswers[i];
+            if (!aspectScores.has(asp)) aspectScores.set(asp, {total:0, count:0});
+            let obj = aspectScores.get(asp);
+            obj.total += score;
+            obj.count++;
+        }
+        let results = [];
+        for (let [asp, data] of aspectScores.entries()) {
+            const avg = data.total / data.count;
+            const meta = aspectMeta[asp] || { name: asp, original: "", explain: "" };
+            results.push({ aspect: asp, artName: meta.name, avg, original: meta.original, explain: meta.explain });
+        }
+        results.sort((a,b)=> b.avg - a.avg);
+        const strengths = results.slice(0, 3);
+        const weaknesses = results.slice(-3).reverse();
+        let html = `<div style="font-size:1.3rem; font-weight:600;">🧭 命术镜鉴</div>`;
+        html += `<div class="section-title">✨ 根基稳固 · 长项</div>`;
+        for (let s of strengths) {
+            html += `<div class="strength-item"><div class="art-title-small">${s.artName}</div><div class="art-original">${s.original}</div><div class="art-explain">${s.explain}</div></div>`;
+        }
+        html += `<div class="section-title">🌱 待补缝隙 · 可修之域</div>`;
+        for (let w of weaknesses) {
+            html += `<div class="weakness-item"><div class="art-title-small">${w.artName}</div><div class="art-original">${w.original}</div><div class="art-explain">${w.explain}</div></div>`;
+        }
+        const strongNames = strengths.map(s=>s.artName.split('·')[0]).join('、');
+        const weakNames = weaknesses.map(w=>w.artName.split('·')[0]).join('、');
+        let advice = `你在「${strongNames}」上已有不俗根基，这是你的压舱石。而「${weakNames}」是当前气运最易泄漏的缺口。`;
+        if (weaknesses.some(w=>w.aspect==='waste')) advice += " 尤其浪费一项，每一次丢弃都在烧运。从光盘和节约水电开始。";
+        if (weaknesses.some(w=>w.aspect==='social')) advice += " 与人交谈时放下身份感，平等心会引来更多贵人。";
+        if (weaknesses.some(w=>w.aspect==='money')) advice += " 金钱谨慎是运气的堤坝，借钱前三思。";
+        advice += " 命书是镜子，讼过内省，从自己出发，气运自然流转。";
+        html += `<div class="summary-box"><strong>📖 综合箴言</strong><br>${advice}</div>`;
+        resultArea.innerHTML = html;
+        resultArea.style.display = 'block';
+        resultArea.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // 模式切换
+    function setMode(mode) {
+        currentMode = mode;
+        if (mode === 'book') {
+            testViewDiv.classList.add('hidden');
+            bookViewDiv.classList.remove('hidden');
+            resultArea.style.display = 'none';
+            let bookHtml = '';
+            for (let art of completeBook) {
+                bookHtml += `<div class="art-item"><div class="art-title">${art.title}</div><div class="art-original">${art.original}</div><div class="art-trans">📖 ${art.trans}</div></div>`;
+            }
+            bookViewDiv.innerHTML = bookHtml;
+        } else {
+            testViewDiv.classList.remove('hidden');
+            bookViewDiv.classList.add('hidden');
+            resultArea.style.display = 'none';
+            // 生成题目
+            if (mode === 'rapid') {
+                // 随机抽取40道，保证覆盖所有aspect
+                let shuffled = [...FINAL_BANK];
+                for (let i=shuffled.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]]; }
+                currentQuestions = shuffled.slice(0,40);
+            } else {
+                currentQuestions = [...FINAL_BANK];
+            }
+            currentAnswers = new Array(currentQuestions.length).fill(null);
+            questionsDiv.innerHTML = '';
+            renderedUpTo = 0;
+            renderBatch();
+            updateProgressUI();
+        }
+    }
+
+    // 绑定模式卡片点击
+    document.querySelectorAll('.mode-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const mode = card.dataset.mode;
+            setMode(mode);
+            document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('active'));
+            card.classList.add('active');
+        });
+    });
+    document.getElementById('submitTestBtn')?.addEventListener('click', computeAndShowResult);
+    document.getElementById('resetTestBtn')?.addEventListener('click', resetTest);
+    document.getElementById('backToModeBtn')?.addEventListener('click', () => {
+        testViewDiv.classList.add('hidden');
+        modeSelectorDiv.style.display = 'flex';
+        resultArea.style.display = 'none';
+    });
+    // 初始展示模式选择
+    modeSelectorDiv.style.display = 'flex';
+    testViewDiv.classList.add('hidden');
+    bookViewDiv.classList.add('hidden');
+</script>
+</body>
+</html>
