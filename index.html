@@ -267,6 +267,7 @@
             font-size: 0.75rem;
             color: #6f6658;
             margin-top: 0.3rem;
+            font-style: italic;
         }
         .summary-box {
             background: #eae1d4;
@@ -589,7 +590,7 @@
         html += `<div class="type-badge">🏷️ 你的命术类型：${personality.name}</div>`;
         html += `<p style="margin-bottom:1rem;">${personality.desc}</p>`;
 
-        let weaknessAspects = [];
+        let weaknessAspects = new Set(); // 收集需要显示命书条目的方面（可修）
 
         for (let [catName, aspectList] of Object.entries(categoryMap)) {
             const existing = allAspectAvg.filter(a => aspectList.includes(a.aspect));
@@ -597,8 +598,9 @@
             existing.sort((a,b) => b.avg - a.avg);
             const best = existing[0];
             const worst = existing[existing.length-1];
+            // 如果最低分低于4.5，则加入待展示集合
             if (worst.avg < 4.5) {
-                weaknessAspects.push(worst.aspect);
+                weaknessAspects.add(worst.aspect);
             }
             let badHtml = worst.avg >= 4.5 ? `<div class="bad-item"><strong>✓ 无明显短板</strong><br>各项均在4.5分以上</div>` : `<div class="bad-item"><strong>⚠️ 可修</strong><br>${aspectDisplayName[worst.aspect] || worst.aspect} (${worst.avg.toFixed(1)}分)</div>`;
             html += `<div class="category-section">
@@ -607,19 +609,23 @@
                             <div class="good-item"><strong>✓ 长处</strong><br>${aspectDisplayName[best.aspect] || best.aspect} (${best.avg.toFixed(1)}分)</div>
                             ${badHtml}
                         </div>
-                        <div class="small-note">该分类下其他维度处于中间状态，可参考命书精进。</div>
+                        <div class="small-note">其他维度表现尚可，建议阅读命书相应条目进一步提升。</div>
                     </div>`;
         }
 
+        // 综合箴言
         let strongAspects = allAspectAvg.filter(a => a.avg >= 4.0).map(a => aspectDisplayName[a.aspect] || a.aspect);
         let weakAspects = allAspectAvg.filter(a => a.avg <= 2.5).map(a => aspectDisplayName[a.aspect] || a.aspect);
+        // 也将综合箴言中提到的弱项加入展示集合（避免遗漏）
+        allAspectAvg.filter(a => a.avg <= 2.5).forEach(a => weaknessAspects.add(a.aspect));
+        
         let advice = `你的气运根基稳固于「${strongAspects.slice(0,3).join('、') || '多个方面'}」，而「${weakAspects.slice(0,3).join('、') || '少数方面'}」是需要留意的缝隙。建议重点阅读命书中相关条目，并在日常生活中多加觉察。`;
         html += `<div class="summary-box"><strong>📖 综合箴言</strong><br>${advice}</div>`;
 
-        const relatedSet = new Set(weaknessAspects);
-        if (relatedSet.size > 0 && bookData.length > 0) {
+        // 显示相关命书条目（针对可修之处）
+        if (weaknessAspects.size > 0 && bookData.length > 0) {
             html += `<div class="related-arts"><div class="related-title">📜 相关命书条目（针对可修之处）</div>`;
-            for (let asp of relatedSet) {
+            for (let asp of weaknessAspects) {
                 const art = findRelatedArt(asp);
                 if (art) {
                     html += `<div class="related-item">
@@ -628,9 +634,14 @@
                                 <div class="trans">📖 ${art.translation}</div>
                                 ${art.evaluation ? `<div class="art-eval" style="margin-top:0.3rem;">✍️ ${art.evaluation}</div>` : ''}
                             </div>`;
+                } else {
+                    // 如果找不到对应的术，显示占位提示（避免空白）
+                    html += `<div class="related-item"><strong>${aspectDisplayName[asp] || asp}</strong><br><div class="trans">相关命书条目待补充，可先参考其他部分。</div></div>`;
                 }
             }
             html += `</div>`;
+        } else if (weaknessAspects.size === 0) {
+            html += `<div class="related-arts"><div class="related-title">📜 相关命书条目</div><div class="related-item">暂无突出弱项，继续保持！可阅读全部命书以深化修养。</div></div>`;
         }
 
         html += `<div style="display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap;">
