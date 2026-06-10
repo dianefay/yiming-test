@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>易命术 · 处世自测</title>
+    <title>易命术 · 处世自测（分页版）</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #f0ede7;
-            font-family: system-ui, -apple-system, 'Segoe UI', 'Roboto', sans-serif;
+            font-family: system-ui, 'Segoe UI', sans-serif;
             padding: 1.5rem 1rem;
             color: #2c2b28;
         }
@@ -22,21 +18,16 @@
             background: white;
             border-radius: 2rem;
             box-shadow: 0 20px 35px rgba(0,0,0,0.05);
-            overflow: hidden;
             padding: 1.8rem 2rem 2.5rem;
         }
         h1 {
             font-size: 1.9rem;
-            font-weight: 650;
-            letter-spacing: -0.5px;
             border-left: 6px solid #b87c4f;
             padding-left: 1rem;
         }
         .sub {
             color: #6b6258;
-            margin-top: 0.3rem;
-            margin-bottom: 1.5rem;
-            padding-left: 1rem;
+            margin: 0.3rem 0 1.5rem 1rem;
             font-size: 0.9rem;
         }
         .mode-selector {
@@ -53,21 +44,15 @@
             padding: 1rem;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: 0.2s;
         }
         .mode-card.active {
             border-color: #b87c4f;
             background: #fff6ed;
             box-shadow: 0 4px 12px rgba(184,124,79,0.15);
         }
-        .mode-card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.3rem;
-        }
-        .mode-card p {
-            font-size: 0.8rem;
-            color: #6b5c4b;
-        }
+        .mode-card h3 { font-size: 1.2rem; margin-bottom: 0.3rem; }
+        .mode-card p { font-size: 0.8rem; color: #6b5c4b; }
         .book-view {
             background: #fefaf5;
             border-radius: 1.5rem;
@@ -94,11 +79,7 @@
             font-size: 0.8rem;
             margin: 0.3rem 0;
         }
-        .art-trans {
-            font-size: 0.85rem;
-            line-height: 1.4;
-            color: #4b3e2e;
-        }
+        .art-trans { font-size: 0.85rem; color: #4b3e2e; }
         .art-eval {
             font-size: 0.85rem;
             color: #b1624b;
@@ -108,21 +89,26 @@
             border-radius: 12px;
             display: inline-block;
         }
-        .progress-stats {
+        .test-header {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8rem;
-            margin: 0.5rem 0 0.2rem;
-            color: #6b5c4b;
+            margin-bottom: 1rem;
+            align-items: baseline;
         }
-        .progress {
+        .page-info {
+            background: #e9e2d8;
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+        }
+        .progress-bar {
             background: #e9e2d8;
             border-radius: 20px;
             height: 8px;
             width: 100%;
-            margin-bottom: 1.5rem;
+            margin: 1rem 0;
         }
-        .progress-bar {
+        .progress-fill {
             background: #b87c4f;
             width: 0%;
             height: 8px;
@@ -136,11 +122,7 @@
             margin-bottom: 1rem;
             border: 1px solid #ede3d6;
         }
-        .q-text {
-            font-weight: 500;
-            line-height: 1.4;
-            margin-bottom: 0.8rem;
-        }
+        .q-text { font-weight: 500; margin-bottom: 0.8rem; }
         .options {
             display: flex;
             flex-wrap: wrap;
@@ -156,7 +138,6 @@
             padding: 0.45rem 0;
             font-size: 0.85rem;
             cursor: pointer;
-            transition: 0.1s;
             color: #5e5548;
         }
         .opt.selected {
@@ -164,50 +145,30 @@
             border-color: #b87c4f;
             color: white;
         }
-        .opt span {
-            font-size: 0.7rem;
-            display: block;
-            opacity: 0.8;
-        }
-        .load-more-btn {
-            background: #e2d9cf;
-            border: none;
-            width: 100%;
-            padding: 0.8rem;
-            border-radius: 3rem;
-            font-weight: 600;
-            margin: 0.5rem 0 1rem;
-            cursor: pointer;
-            font-size: 0.95rem;
-            transition: 0.2s;
-        }
-        .load-more-btn:hover {
-            background: #d1c5b6;
-        }
-        .btn-group {
+        .opt span { font-size: 0.7rem; display: block; opacity: 0.8; }
+        .nav-buttons {
             display: flex;
             gap: 1rem;
-            margin: 1rem 0 0.5rem;
+            justify-content: center;
+            margin: 1.5rem 0 0.5rem;
         }
-        .btn-primary, .btn-secondary {
-            flex: 1;
-            border: none;
-            padding: 0.8rem;
-            border-radius: 3rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        .btn-primary {
+        button {
             background: #2c2b28;
             color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
         }
-        .btn-primary:hover {
-            background: #4a3b2e;
-        }
-        .btn-secondary {
+        button.secondary {
             background: #e2d9cf;
             color: #2c2b28;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         .result-area {
             background: #f6f2eb;
@@ -216,296 +177,319 @@
             margin-top: 2rem;
             border-left: 6px solid #b87c4f;
         }
-        .section-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin: 1rem 0 0.8rem;
-            padding-bottom: 4px;
-            border-bottom: 2px solid #e0d4c6;
-        }
-        .strength-item, .weakness-item {
-            background: #fffcf7;
-            border-radius: 1rem;
-            padding: 1rem;
+        .type-badge {
+            background: #b87c4f20;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            display: inline-block;
+            font-weight: bold;
             margin-bottom: 1rem;
         }
-        .summary-box {
-            background: #eae1d4;
-            border-radius: 1rem;
-            padding: 1rem;
-            margin-top: 1.2rem;
-        }
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
         .footer-note {
             font-size: 0.7rem;
             text-align: center;
             color: #aa9f90;
             margin-top: 2rem;
         }
-        button {
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
 <div class="container" id="app">
     <h1>易命术 · 处世自测</h1>
-    <div class="sub">观照当下 · 修补气运缝隙</div>
+    <div class="sub">分页作答 · 揭示你的命术类型</div>
 
     <div class="mode-selector" id="modeSelector">
-        <div class="mode-card" data-mode="rapid">
-            <h3>⚡ 极速测试</h3>
-            <p>随机40题 · 覆盖全维度 · 约5分钟</p>
-        </div>
-        <div class="mode-card" data-mode="full">
-            <h3>📚 完整测试</h3>
-            <p>全量题库 · 深度自省 · 约15分钟</p>
-        </div>
-        <div class="mode-card" data-mode="book">
-            <h3>📖 命书阅读</h3>
-            <p>原文+白话+评价 · 随时翻阅</p>
-        </div>
+        <div class="mode-card" data-mode="rapid"><h3>⚡ 极速测试</h3><p>随机40题 · 分页完成</p></div>
+        <div class="mode-card" data-mode="full"><h3>📚 完整测试</h3><p>全量题库 · 深度自省</p></div>
+        <div class="mode-card" data-mode="book"><h3>📖 命书阅读</h3><p>原文+白话+评价</p></div>
     </div>
 
     <div id="bookView" class="book-view hidden"></div>
 
     <div id="testView" class="hidden">
-        <div class="progress-stats">
-            <span>📋 已答: <span id="answeredCount">0</span> / <span id="totalCountSpan">0</span></span>
-            <span>🧘 每次加载5题，可随时提交</span>
+        <div class="test-header">
+            <span class="page-info" id="pageInfo">第1页 / 共?页</span>
+            <span>总进度 <span id="totalProgress">0</span>/<span id="totalNeeded">0</span></span>
         </div>
-        <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
-        <div id="questionsArea"></div>
-        <div id="loadMoreContainer" style="text-align: center;"></div>
-        <div class="btn-group">
-            <button id="submitTestBtn" class="btn-primary">📜 解读命术图谱</button>
-            <button id="resetTestBtn" class="btn-secondary">🔄 重置所有答案</button>
-            <button id="backToModeBtn" class="btn-secondary">🏠 返回模式选择</button>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div id="questionsPage"></div>
+        <div class="nav-buttons">
+            <button id="prevPageBtn" class="secondary" disabled>◀ 上一页</button>
+            <button id="nextPageBtn">下一页 ▶</button>
+        </div>
+        <div style="text-align:center; margin-top:1rem;">
+            <button id="resetTestBtn" class="secondary">🔄 重选模式</button>
         </div>
     </div>
 
-    <div id="resultArea" class="result-area" style="display: none;"></div>
-    <div class="footer-note">所有题目询问近期状态，凭第一直觉作答(5→非常符合，1→完全不符)。</div>
+    <div id="resultArea" class="result-area hidden"></div>
+    <div class="footer-note">每题凭直觉作答(5→非常符合，1→完全不符)。每页需全部答完才能进入下一页。</div>
 </div>
 
 <script>
-    // 全局数据
+    // ----------------------------- 全局变量 -----------------------------
     let fullQuestionBank = [];
     let bookData = [];
     let currentQuestions = [];
     let currentAnswers = [];
-    let currentMode = null; // 'rapid', 'full'
-    let renderedUpTo = 0;
-    const BATCH_SIZE = 5;
+    let pageSize = 5;
+    let currentPage = 0;
+    let totalPages = 0;
 
     // DOM 元素
-    const modeSelectorDiv = document.getElementById('modeSelector');
-    const bookViewDiv = document.getElementById('bookView');
-    const testViewDiv = document.getElementById('testView');
-    const questionsDiv = document.getElementById('questionsArea');
-    const loadMoreContainer = document.getElementById('loadMoreContainer');
-    const answeredSpan = document.getElementById('answeredCount');
-    const totalSpan = document.getElementById('totalCountSpan');
-    const progressBar = document.getElementById('progressBar');
+    const modeSelector = document.getElementById('modeSelector');
+    const bookView = document.getElementById('bookView');
+    const testView = document.getElementById('testView');
+    const questionsPageDiv = document.getElementById('questionsPage');
+    const prevBtn = document.getElementById('prevPageBtn');
+    const nextBtn = document.getElementById('nextPageBtn');
+    const resetTestBtn = document.getElementById('resetTestBtn');
+    const pageInfoSpan = document.getElementById('pageInfo');
+    const totalProgressSpan = document.getElementById('totalProgress');
+    const totalNeededSpan = document.getElementById('totalNeeded');
+    const progressFill = document.getElementById('progressFill');
     const resultArea = document.getElementById('resultArea');
 
-    // 辅助函数
-    function updateProgressUI() {
+    // ----------------------------- 辅助函数 -----------------------------
+    function updateProgress() {
         const answered = currentAnswers.filter(v => v !== null).length;
-        answeredSpan.innerText = answered;
-        totalSpan.innerText = currentQuestions.length;
+        totalProgressSpan.innerText = answered;
         const percent = (answered / currentQuestions.length) * 100;
-        progressBar.style.width = percent + '%';
+        progressFill.style.width = percent + '%';
     }
 
-    function renderBatch() {
-        const nextEnd = Math.min(renderedUpTo + BATCH_SIZE, currentQuestions.length);
-        if (nextEnd <= renderedUpTo) return;
-        for (let i = renderedUpTo; i < nextEnd; i++) {
+    function isCurrentPageComplete() {
+        const start = currentPage * pageSize;
+        const end = Math.min(start + pageSize, currentQuestions.length);
+        for (let i = start; i < end; i++) {
+            if (currentAnswers[i] === null) return false;
+        }
+        return true;
+    }
+
+    function renderCurrentPage() {
+        const start = currentPage * pageSize;
+        const end = Math.min(start + pageSize, currentQuestions.length);
+        let html = '';
+        for (let i = start; i < end; i++) {
             const q = currentQuestions[i];
-            const card = document.createElement('div');
-            card.className = 'question-card';
-            card.dataset.idx = i;
-            const selectedVal = currentAnswers[i];
-            card.innerHTML = `
-                <div class="q-text">${i+1}. ${q.text}</div>
-                <div class="options" data-qidx="${i}">
-                    ${[5,4,3,2,1].map(v => `<div class="opt ${selectedVal === v ? 'selected' : ''}" data-val="${v}">${v}<span>${v===5?'非常符合':v===4?'比较符合':v===3?'一般':v===2?'不太符合':'完全不符'}</span></div>`).join('')}
+            const val = currentAnswers[i];
+            html += `
+                <div class="question-card" data-qidx="${i}">
+                    <div class="q-text">${i+1}. ${q.text}</div>
+                    <div class="options">
+                        ${[5,4,3,2,1].map(v => `
+                            <div class="opt ${val === v ? 'selected' : ''}" data-val="${v}">
+                                ${v}<span>${v===5?'非常符合':v===4?'比较符合':v===3?'一般':v===2?'不太符合':'完全不符'}</span>
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
             `;
-            questionsDiv.appendChild(card);
         }
-        renderedUpTo = nextEnd;
+        questionsPageDiv.innerHTML = html;
 
         // 绑定选项事件
-        document.querySelectorAll(`.options[data-qidx]`).forEach(optGroup => {
-            const qidx = parseInt(optGroup.dataset.qidx);
-            if (qidx >= nextEnd - BATCH_SIZE && qidx < nextEnd) {
-                optGroup.querySelectorAll('.opt').forEach(opt => {
-                    opt.addEventListener('click', (e) => {
-                        const val = parseInt(opt.dataset.val);
-                        currentAnswers[qidx] = val;
-                        updateProgressUI();
-                        optGroup.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
-                        opt.classList.add('selected');
-                    });
+        document.querySelectorAll('.question-card').forEach(card => {
+            const qidx = parseInt(card.dataset.qidx);
+            card.querySelectorAll('.opt').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    const val = parseInt(opt.dataset.val);
+                    currentAnswers[qidx] = val;
+                    card.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    updateProgress();
+                    updateNavButtons();
                 });
-            }
+            });
         });
 
-        if (renderedUpTo < currentQuestions.length) {
-            loadMoreContainer.innerHTML = `<button class="load-more-btn" id="loadMoreBtn">📦 再加载 ${Math.min(BATCH_SIZE, currentQuestions.length - renderedUpTo)} 题</button>`;
-            document.getElementById('loadMoreBtn')?.addEventListener('click', () => renderBatch());
+        pageInfoSpan.innerText = `第${currentPage+1}页 / 共${totalPages}页`;
+        updateProgress();
+        updateNavButtons();
+    }
+
+    function updateNavButtons() {
+        prevBtn.disabled = (currentPage === 0);
+        if (currentPage === totalPages - 1) {
+            const allDone = currentAnswers.every(v => v !== null);
+            if (allDone) {
+                nextBtn.innerText = '✅ 完成测试';
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.innerText = '完成测试';
+                nextBtn.disabled = true;
+            }
         } else {
-            loadMoreContainer.innerHTML = '<span style="font-size:0.8rem;">✅ 全部题目已加载，可提交结果</span>';
+            nextBtn.innerText = '下一页 ▶';
+            nextBtn.disabled = !isCurrentPageComplete();
         }
-        updateProgressUI();
     }
 
-    function resetTest() {
-        if (!currentQuestions.length) return;
-        currentAnswers.fill(null);
-        questionsDiv.innerHTML = '';
-        renderedUpTo = 0;
-        renderBatch();
-        resultArea.style.display = 'none';
-        updateProgressUI();
+    function goPrevPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            renderCurrentPage();
+        }
     }
 
-    function computeAndShowResult() {
-        const answeredCount = currentAnswers.filter(v => v !== null).length;
-        if (answeredCount !== currentQuestions.length) {
-            alert(`请先答完所有题目（已完成 ${answeredCount}/${currentQuestions.length}）`);
+    function goNextPage() {
+        if (currentPage === totalPages - 1) {
+            if (currentAnswers.every(v => v !== null)) computeAndShowResult();
             return;
         }
-        // 聚合 aspect 分数
+        if (isCurrentPageComplete() && currentPage < totalPages - 1) {
+            currentPage++;
+            renderCurrentPage();
+        }
+    }
+
+    // ----------------------------- 人格分析 -----------------------------
+    function getPersonalityType(aspectScoresMap) {
+        let results = [];
+        for (let [asp, data] of aspectScoresMap.entries()) {
+            results.push({ aspect: asp, avg: data.total / data.count });
+        }
+        results.sort((a,b) => b.avg - a.avg);
+        const top3 = results.slice(0,3).map(r => r.aspect);
+        const bottom3 = results.slice(-3).map(r => r.aspect);
+        
+        if (top3.includes("introspect") && top3.includes("selfknow")) {
+            return { name: "明心见性者", desc: "你善于内省，对自己有清晰认知，不易被外界带偏。这是修运的深厚根基，但需注意避免过度自省导致行动迟缓。" };
+        } else if (top3.includes("allin") || top3.includes("agency")) {
+            return { name: "破局开拓者", desc: "你敢于豁出去，相信命运在自己手中。行动力强，但需注意“避而俟之”的智慧，有时等待比硬冲更重要。" };
+        } else if (top3.includes("social") && top3.includes("tolerance")) {
+            return { name: "广结善缘者", desc: "你与人相处平等宽容，易得贵人相助。但需注意守住边界，避免过度忍让消耗自己。" };
+        } else if (bottom3.includes("waste") || bottom3.includes("money")) {
+            return { name: "散财待聚型", desc: "你在财务和资源管理上尚有缝隙，气运易从浪费中漏失。调整消费习惯后，运势会有明显提升。" };
+        } else if (bottom3.includes("rush") || bottom3.includes("anger")) {
+            return { name: "火急火燎型", desc: "你容易急躁或发火，这会扰乱心智和运气。学会慢下来、深呼吸，机会自会浮现。" };
+        } else {
+            return { name: "中正平和者", desc: "你各方面较为均衡，无明显短板。继续在“识己”和“内省”上深耕，可臻上乘。" };
+        }
+    }
+
+    async function computeAndShowResult() {
         let aspectScores = new Map();
         for (let i=0; i<currentQuestions.length; i++) {
             const asp = currentQuestions[i].aspect;
             const score = currentAnswers[i];
-            if (!aspectScores.has(asp)) aspectScores.set(asp, {total:0, count:0});
+            if (!aspectScores.has(asp)) aspectScores.set(asp, { total:0, count:0 });
             let obj = aspectScores.get(asp);
             obj.total += score;
             obj.count++;
         }
         let results = [];
         for (let [asp, data] of aspectScores.entries()) {
-            const avg = data.total / data.count;
-            // 从 bookData 中找对应的术名（这里简单映射，可扩展）
-            let artName = asp;
-            results.push({ aspect: asp, artName, avg });
+            results.push({ aspect: asp, avg: data.total/data.count });
         }
         results.sort((a,b) => b.avg - a.avg);
-        const strengths = results.slice(0, 3);
+        const strengths = results.slice(0,3);
         const weaknesses = results.slice(-3).reverse();
-
+        const personality = getPersonalityType(aspectScores);
+        
         let html = `<div style="font-size:1.3rem; font-weight:600;">🧭 命术镜鉴</div>`;
-        html += `<div class="section-title">✨ 根基稳固 · 长项</div>`;
-        for (let s of strengths) {
-            html += `<div class="strength-item"><strong>${s.artName}</strong> (得分倾向高)</div>`;
-        }
-        html += `<div class="section-title">🌱 待补缝隙 · 可修之域</div>`;
-        for (let w of weaknesses) {
-            html += `<div class="weakness-item"><strong>${w.artName}</strong> (得分倾向低)</div>`;
-        }
-        const strongNames = strengths.map(s=>s.artName).join('、');
-        const weakNames = weaknesses.map(w=>w.artName).join('、');
-        let advice = `你在「${strongNames}」上根基较好，而「${weakNames}」是目前气运易漏之处。建议针对薄弱方面，阅读命书相应条目，日常多加觉察。`;
-        html += `<div class="summary-box"><strong>📖 综合箴言</strong><br>${advice}</div>`;
+        html += `<div class="type-badge">🏷️ 你的命术类型：${personality.name}</div>`;
+        html += `<p style="margin-bottom:1rem;">${personality.desc}</p>`;
+        html += `<div><strong>✨ 根基维度</strong><ul>`;
+        strengths.forEach(s => html += `<li>${s.aspect} (${s.avg.toFixed(1)}分)</li>`);
+        html += `</ul></div><div><strong>🌱 待修维度</strong><ul>`;
+        weaknesses.forEach(w => html += `<li>${w.aspect} (${w.avg.toFixed(1)}分)</li>`);
+        html += `</ul></div><div class="summary-box" style="margin-top:1rem;"><strong>📖 综合箴言</strong><br>`;
+        html += `你的气运根基在于「${strengths.map(s=>s.aspect).join('、')}」，而「${weaknesses.map(w=>w.aspect).join('、')}」是当前缝隙。建议阅读命书相关条目，日常多加觉察。`;
+        html += `</div><button id="backToModeBtn" class="secondary" style="margin-top:1rem;">🏠 返回模式选择</button>`;
         resultArea.innerHTML = html;
-        resultArea.style.display = 'block';
-        resultArea.scrollIntoView({ behavior: 'smooth' });
+        resultArea.classList.remove('hidden');
+        testView.classList.add('hidden');
+        document.getElementById('backToModeBtn')?.addEventListener('click', () => {
+            resultArea.classList.add('hidden');
+            modeSelector.style.display = 'flex';
+            testView.classList.add('hidden');
+            bookView.classList.add('hidden');
+        });
     }
 
-    function startRapidTest() {
+    // ----------------------------- 开始测试 -----------------------------
+    function startTest(mode) {
         if (!fullQuestionBank.length) return;
-        // 随机抽取40道不重复
-        const shuffled = [...fullQuestionBank];
-        for (let i=shuffled.length-1; i>0; i--) {
-            const j = Math.floor(Math.random()*(i+1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        if (mode === 'rapid') {
+            const shuffled = [...fullQuestionBank];
+            for (let i=shuffled.length-1; i>0; i--) {
+                const j = Math.floor(Math.random()*(i+1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            currentQuestions = shuffled.slice(0, 40);
+        } else {
+            currentQuestions = [...fullQuestionBank];
         }
-        currentQuestions = shuffled.slice(0, 40);
-        currentAnswers = new Array(40).fill(null);
-        renderTestInterface();
-    }
-
-    function startFullTest() {
-        if (!fullQuestionBank.length) return;
-        currentQuestions = [...fullQuestionBank];
-        currentAnswers = new Array(fullQuestionBank.length).fill(null);
-        renderTestInterface();
-    }
-
-    function renderTestInterface() {
-        modeSelectorDiv.style.display = 'none';
-        testViewDiv.classList.remove('hidden');
-        bookViewDiv.classList.add('hidden');
-        resultArea.style.display = 'none';
-        questionsDiv.innerHTML = '';
-        renderedUpTo = 0;
-        renderBatch();
-        updateProgressUI();
+        currentAnswers = new Array(currentQuestions.length).fill(null);
+        totalPages = Math.ceil(currentQuestions.length / pageSize);
+        currentPage = 0;
+        modeSelector.style.display = 'none';
+        testView.classList.remove('hidden');
+        bookView.classList.add('hidden');
+        resultArea.classList.add('hidden');
+        totalNeededSpan.innerText = currentQuestions.length;
+        renderCurrentPage();
     }
 
     function showBookView() {
         if (!bookData.length) return;
-        modeSelectorDiv.style.display = 'none';
-        testViewDiv.classList.add('hidden');
-        bookViewDiv.classList.remove('hidden');
-        resultArea.style.display = 'none';
+        modeSelector.style.display = 'none';
+        testView.classList.add('hidden');
+        bookView.classList.remove('hidden');
+        resultArea.classList.add('hidden');
         let html = '';
         for (let art of bookData) {
             html += `<div class="art-item">
                         <div class="art-title">${art.title}</div>
                         <div class="art-original">${art.original}</div>
                         <div class="art-trans">📖 ${art.translation}</div>`;
-            if (art.evaluation) {
-                html += `<div class="art-eval">✍️ 评价：${art.evaluation}</div>`;
-            }
+            if (art.evaluation) html += `<div class="art-eval">✍️ ${art.evaluation}</div>`;
             html += `</div>`;
         }
-        bookViewDiv.innerHTML = html;
+        bookView.innerHTML = html;
     }
 
+    function resetToModeSelect() {
+        modeSelector.style.display = 'flex';
+        testView.classList.add('hidden');
+        bookView.classList.add('hidden');
+        resultArea.classList.add('hidden');
+    }
+
+    // ----------------------------- 加载数据 -----------------------------
     async function loadData() {
         try {
-            const [questionsRes, bookRes] = await Promise.all([
+            const [qRes, bRes] = await Promise.all([
                 fetch('questions.json'),
                 fetch('book.json')
             ]);
-            const questionsData = await questionsRes.json();
-            const bookDataRaw = await bookRes.json();
-            fullQuestionBank = questionsData.questions;
-            bookData = bookDataRaw.books;
+            const qData = await qRes.json();
+            const bData = await bRes.json();
+            fullQuestionBank = qData.questions;
+            bookData = bData.books;
             console.log(`题库加载完成: ${fullQuestionBank.length} 题`);
-            // 绑定模式卡片事件
+
             document.querySelectorAll('.mode-card').forEach(card => {
-                card.addEventListener('click', (e) => {
+                card.addEventListener('click', () => {
                     const mode = card.dataset.mode;
-                    if (mode === 'rapid') startRapidTest();
-                    else if (mode === 'full') startFullTest();
+                    if (mode === 'rapid') startTest('rapid');
+                    else if (mode === 'full') startTest('full');
                     else if (mode === 'book') showBookView();
                     document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
                     card.classList.add('active');
                 });
             });
-            document.getElementById('submitTestBtn')?.addEventListener('click', computeAndShowResult);
-            document.getElementById('resetTestBtn')?.addEventListener('click', resetTest);
-            document.getElementById('backToModeBtn')?.addEventListener('click', () => {
-                modeSelectorDiv.style.display = 'flex';
-                testViewDiv.classList.add('hidden');
-                bookViewDiv.classList.add('hidden');
-                resultArea.style.display = 'none';
-            });
-        } catch (err) {
-            console.error('加载数据失败', err);
+            resetTestBtn.addEventListener('click', resetToModeSelect);
+            prevBtn.addEventListener('click', goPrevPage);
+            nextBtn.addEventListener('click', goNextPage);
+        } catch(e) {
+            console.error(e);
             alert('数据加载失败，请刷新重试');
         }
     }
-
     loadData();
 </script>
 </body>
