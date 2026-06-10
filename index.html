@@ -4,74 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>易命术 · 处世自测</title>
-    <!-- html2canvas 库，用于截图 -->
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #f0ede7;
             font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
             padding: 1rem;
             color: #2c2b28;
         }
-
         .container {
             max-width: 860px;
             margin: 0 auto;
             background: white;
             border-radius: 2rem;
-            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.05);
             padding: 1.5rem;
         }
-
-        /* 移动端内边距调整 */
         @media (max-width: 600px) {
-            .container {
-                padding: 1.2rem;
-                border-radius: 1.5rem;
-            }
-            h1 {
-                font-size: 1.6rem;
-            }
-            .mode-card h3 {
-                font-size: 1rem;
-            }
-            .opt {
-                font-size: 0.75rem;
-                padding: 0.35rem 0;
-            }
-            .opt span {
-                font-size: 0.6rem;
-            }
-            .question-card {
-                padding: 0.8rem;
-            }
+            .container { padding: 1.2rem; border-radius: 1.5rem; }
+            h1 { font-size: 1.6rem; }
+            .mode-card h3 { font-size: 1rem; }
+            .opt { font-size: 0.75rem; padding: 0.35rem 0; }
+            .opt span { font-size: 0.6rem; }
+            .question-card { padding: 0.8rem; }
         }
-
         h1 {
             font-size: 1.9rem;
             border-left: 6px solid #b87c4f;
             padding-left: 1rem;
         }
-
         .sub {
             color: #6b6258;
             margin: 0.3rem 0 1.5rem 1rem;
             font-size: 0.9rem;
         }
-
         .mode-selector {
             display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
             flex-wrap: wrap;
         }
-
         .mode-card {
             flex: 1;
             background: #fefaf5;
@@ -82,43 +55,41 @@
             cursor: pointer;
             transition: 0.2s;
         }
-
         .mode-card.active {
             border-color: #b87c4f;
             background: #fff6ed;
-            box-shadow: 0 4px 12px rgba(184, 124, 79, 0.15);
+            box-shadow: 0 4px 12px rgba(184,124,79,0.15);
         }
-
-        .mode-card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .mode-card p {
-            font-size: 0.8rem;
-            color: #6b5c4b;
-        }
-
+        .mode-card h3 { font-size: 1.2rem; margin-bottom: 0.3rem; }
+        .mode-card p { font-size: 0.8rem; color: #6b5c4b; }
         .book-view {
             background: #fefaf5;
             border-radius: 1.5rem;
             padding: 1.2rem;
             max-height: 70vh;
             overflow-y: auto;
+            position: relative;
         }
-
+        .book-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+            position: sticky;
+            top: 0;
+            background: #fefaf5;
+            padding-bottom: 0.5rem;
+            z-index: 10;
+        }
         .art-item {
             margin-bottom: 1.5rem;
             border-bottom: 1px solid #e9e0d4;
             padding-bottom: 1rem;
         }
-
         .art-title {
             font-weight: 700;
             color: #b87c4f;
             margin-bottom: 0.2rem;
         }
-
         .art-original {
             font-family: monospace;
             background: #f3ede5;
@@ -128,12 +99,7 @@
             font-size: 0.8rem;
             margin: 0.3rem 0;
         }
-
-        .art-trans {
-            font-size: 0.85rem;
-            color: #4b3e2e;
-        }
-
+        .art-trans { font-size: 0.85rem; color: #4b3e2e; }
         .art-eval {
             font-size: 0.85rem;
             color: #b1624b;
@@ -143,7 +109,6 @@
             border-radius: 12px;
             display: inline-block;
         }
-
         .test-header {
             display: flex;
             justify-content: space-between;
@@ -152,14 +117,12 @@
             flex-wrap: wrap;
             gap: 0.5rem;
         }
-
         .page-info {
             background: #e9e2d8;
             padding: 0.3rem 1rem;
             border-radius: 2rem;
             font-size: 0.85rem;
         }
-
         .progress-bar {
             background: #e9e2d8;
             border-radius: 20px;
@@ -167,7 +130,6 @@
             width: 100%;
             margin: 1rem 0;
         }
-
         .progress-fill {
             background: #b87c4f;
             width: 0%;
@@ -175,7 +137,6 @@
             border-radius: 20px;
             transition: width 0.2s;
         }
-
         .question-card {
             background: #fefaf5;
             border-radius: 1.5rem;
@@ -183,21 +144,18 @@
             margin-bottom: 1rem;
             border: 1px solid #ede3d6;
         }
-
         .q-text {
             font-weight: 500;
             margin-bottom: 0.8rem;
             font-size: 0.95rem;
             line-height: 1.4;
         }
-
         .options {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
             justify-content: space-between;
         }
-
         .opt {
             flex: 1;
             text-align: center;
@@ -209,26 +167,18 @@
             cursor: pointer;
             color: #5e5548;
         }
-
         .opt.selected {
             background: #b87c4f;
             border-color: #b87c4f;
             color: white;
         }
-
-        .opt span {
-            font-size: 0.7rem;
-            display: block;
-            opacity: 0.8;
-        }
-
+        .opt span { font-size: 0.7rem; display: block; opacity: 0.8; }
         .nav-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
             margin: 1.5rem 0 0.5rem;
         }
-
         button {
             background: #2c2b28;
             color: white;
@@ -240,17 +190,14 @@
             font-size: 0.9rem;
             transition: 0.2s;
         }
-
         button.secondary {
             background: #e2d9cf;
             color: #2c2b28;
         }
-
         button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-
         .result-area {
             background: #f6f2eb;
             border-radius: 1.8rem;
@@ -258,7 +205,6 @@
             margin-top: 2rem;
             border-left: 6px solid #b87c4f;
         }
-
         .type-badge {
             background: #b87c4f20;
             padding: 0.5rem 1rem;
@@ -267,66 +213,49 @@
             font-weight: bold;
             margin-bottom: 1rem;
         }
-
         .category-section {
             margin-bottom: 1.5rem;
             border-bottom: 1px solid #e0d4c6;
             padding-bottom: 0.8rem;
         }
-
         .category-title {
             font-size: 1.1rem;
             font-weight: 600;
             color: #b87c4f;
             margin-bottom: 0.5rem;
         }
-
         .good-bad-row {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
             margin-top: 0.3rem;
         }
-
         .good-item, .bad-item {
             flex: 1;
             background: #fffcf7;
             border-radius: 1rem;
             padding: 0.6rem 1rem;
         }
-
-        .good-item strong {
-            color: #2a7a3e;
-        }
-
-        .bad-item strong {
-            color: #c25d3a;
-        }
-
+        .good-item strong { color: #2a7a3e; }
+        .bad-item strong { color: #c25d3a; }
         .small-note {
             font-size: 0.75rem;
             color: #6f6658;
             margin-top: 0.3rem;
         }
-
         .summary-box {
             background: #eae1d4;
             border-radius: 1rem;
             padding: 1rem;
             margin-top: 1.2rem;
         }
-
-        .hidden {
-            display: none;
-        }
-
+        .hidden { display: none; }
         .footer-note {
             font-size: 0.7rem;
             text-align: center;
             color: #aa9f90;
             margin-top: 2rem;
         }
-
         .save-image-btn {
             background: #b87c4f;
             margin-top: 1rem;
@@ -340,23 +269,12 @@
     <div class="sub">分页作答 · 揭示你的命术类型</div>
 
     <div class="mode-selector" id="modeSelector">
-        <div class="mode-card" data-mode="rapid">
-            <h3>⚡ 极速测试</h3>
-            <p>随机40题 · 分页完成</p>
-        </div>
-        <div class="mode-card" data-mode="full">
-            <h3>📚 完整测试</h3>
-            <p>全量题库 · 深度自省</p>
-        </div>
-        <div class="mode-card" data-mode="book">
-            <h3>📖 命书阅读</h3>
-            <p>原文+白话+评价</p>
-        </div>
+        <div class="mode-card" data-mode="rapid"><h3>⚡ 极速测试</h3><p>随机40题 · 分页完成</p></div>
+        <div class="mode-card" data-mode="full"><h3>📚 完整测试</h3><p>全量题库 · 深度自省</p></div>
+        <div class="mode-card" data-mode="book"><h3>📖 命书阅读</h3><p>原文+白话+评价</p></div>
     </div>
 
-    <div id="bookView" class="book-view hidden">
-        <!-- 命书内容会动态加载，并添加一个返回按钮 -->
-    </div>
+    <div id="bookView" class="book-view hidden"></div>
 
     <div id="testView" class="hidden">
         <div class="test-header">
@@ -370,9 +288,8 @@
             <button id="nextPageBtn">下一页 ▶</button>
         </div>
         <div style="text-align:center; margin-top:1rem;">
-            <button id="resetTestBtn" class="secondary">🔄 重选模式</button>
+            <button id="resetTestBtn" class="secondary">🏠 返回主菜单</button>
         </div>
-        <!-- 答题界面提示，仅在这里显示 -->
         <div class="footer-note">每题凭直觉作答(5→非常符合，1→完全不符)。每页需全部答完才能进入下一页。</div>
     </div>
 
@@ -403,7 +320,7 @@
     const progressFill = document.getElementById('progressFill');
     const resultArea = document.getElementById('resultArea');
 
-    // 分类映射（与之前一致）
+    // 分类映射
     const categoryMap = {
         "环境与自律": ["env", "routine", "waste", "rush"],
         "言语与社交": ["speech", "social", "outsider", "vanity"],
@@ -514,6 +431,15 @@
         }
     }
 
+    // 随机洗牌算法
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
     // 人格类型分析
     function getPersonalityType(aspectScoresMap) {
         let results = [];
@@ -539,7 +465,7 @@
         }
     }
 
-    // 保存结果为图片
+    // 保存结果图片
     async function saveResultAsImage() {
         const resultElement = document.getElementById('resultArea');
         if (!resultElement) return;
@@ -608,7 +534,7 @@
         
         html += `<div class="summary-box"><strong>📖 综合箴言</strong><br>${advice}</div>`;
         html += `<div style="display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap;">
-                    <button id="backToModeBtn" class="secondary" style="flex:1;">🏠 返回模式选择</button>
+                    <button id="backToModeBtn" class="secondary" style="flex:1;">🏠 返回主菜单</button>
                     <button id="saveImageBtn" class="save-image-btn" style="flex:1;">📸 保存结果为图片</button>
                 </div>`;
         resultArea.innerHTML = html;
@@ -631,14 +557,11 @@
             return;
         }
         if (mode === 'rapid') {
-            const shuffled = [...fullQuestionBank];
-            for (let i=shuffled.length-1; i>0; i--) {
-                const j = Math.floor(Math.random()*(i+1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
+            // 随机40题（洗牌取前40）
+            const shuffled = shuffleArray([...fullQuestionBank]);
             currentQuestions = shuffled.slice(0, 40);
-        } else {
-            currentQuestions = [...fullQuestionBank];
+        } else { // 完整模式：打乱全部题目顺序
+            currentQuestions = shuffleArray([...fullQuestionBank]);
         }
         currentAnswers = new Array(currentQuestions.length).fill(null);
         totalPages = Math.ceil(currentQuestions.length / pageSize);
@@ -651,7 +574,7 @@
         renderCurrentPage();
     }
 
-    // 命书阅读界面（带返回按钮）
+    // 命书阅读界面（顶部带返回按钮）
     function showBookView() {
         if (!bookData.length) {
             alert('命书数据加载失败');
@@ -661,7 +584,10 @@
         testView.classList.add('hidden');
         bookView.classList.remove('hidden');
         resultArea.classList.add('hidden');
-        let html = '';
+        
+        let html = `<div class="book-header">
+                        <button id="bookBackBtn" class="secondary" style="padding: 0.3rem 1rem;">🏠 返回主菜单</button>
+                    </div>`;
         for (let art of bookData) {
             html += `<div class="art-item">
                         <div class="art-title">${art.title}</div>
@@ -670,14 +596,18 @@
             if (art.evaluation) html += `<div class="art-eval">✍️ ${art.evaluation}</div>`;
             html += `</div>`;
         }
-        html += `<div style="text-align:center; margin-top:1.5rem;"><button id="bookBackBtn" class="secondary">🏠 返回主菜单</button></div>`;
+        // 底部也加一个返回按钮，方便长页面
+        html += `<div style="text-align:center; margin-top:1.5rem;"><button id="bookBackBtnBottom" class="secondary">🏠 返回主菜单</button></div>`;
         bookView.innerHTML = html;
-        document.getElementById('bookBackBtn')?.addEventListener('click', () => {
+        
+        const backHandler = () => {
             modeSelector.style.display = 'flex';
             testView.classList.add('hidden');
             bookView.classList.add('hidden');
             resultArea.classList.add('hidden');
-        });
+        };
+        document.getElementById('bookBackBtn')?.addEventListener('click', backHandler);
+        document.getElementById('bookBackBtnBottom')?.addEventListener('click', backHandler);
     }
 
     function resetToModeSelect() {
@@ -706,7 +636,7 @@
         }
     }
 
-    // 绑定模式卡片事件（在数据加载完成后也要绑定，但可以先绑定，内部判断数据）
+    // 绑定事件
     function bindEvents() {
         document.querySelectorAll('.mode-card').forEach(card => {
             card.addEventListener('click', () => {
@@ -727,8 +657,7 @@
     loadData().then(() => {
         bindEvents();
     }).catch(() => {
-        // 如果加载失败，仍然绑定事件但会提示数据未就绪
-        bindEvents();
+        bindEvents(); // 即使加载失败也绑定，但会提示
     });
 </script>
 </body>
