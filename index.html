@@ -2,40 +2,76 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>易命术 · 处世自测（单文件版）</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>易命术 · 处世自测</title>
+    <!-- html2canvas 库，用于截图 -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background: #f0ede7;
-            font-family: system-ui, 'Segoe UI', sans-serif;
-            padding: 1.5rem 1rem;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            padding: 1rem;
             color: #2c2b28;
         }
+
         .container {
             max-width: 860px;
             margin: 0 auto;
             background: white;
             border-radius: 2rem;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.05);
-            padding: 1.8rem 2rem 2.5rem;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
         }
+
+        /* 移动端内边距调整 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 1.2rem;
+                border-radius: 1.5rem;
+            }
+            h1 {
+                font-size: 1.6rem;
+            }
+            .mode-card h3 {
+                font-size: 1rem;
+            }
+            .opt {
+                font-size: 0.75rem;
+                padding: 0.35rem 0;
+            }
+            .opt span {
+                font-size: 0.6rem;
+            }
+            .question-card {
+                padding: 0.8rem;
+            }
+        }
+
         h1 {
             font-size: 1.9rem;
             border-left: 6px solid #b87c4f;
             padding-left: 1rem;
         }
+
         .sub {
             color: #6b6258;
             margin: 0.3rem 0 1.5rem 1rem;
             font-size: 0.9rem;
         }
+
         .mode-selector {
             display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
             flex-wrap: wrap;
         }
+
         .mode-card {
             flex: 1;
             background: #fefaf5;
@@ -46,13 +82,23 @@
             cursor: pointer;
             transition: 0.2s;
         }
+
         .mode-card.active {
             border-color: #b87c4f;
             background: #fff6ed;
-            box-shadow: 0 4px 12px rgba(184,124,79,0.15);
+            box-shadow: 0 4px 12px rgba(184, 124, 79, 0.15);
         }
-        .mode-card h3 { font-size: 1.2rem; margin-bottom: 0.3rem; }
-        .mode-card p { font-size: 0.8rem; color: #6b5c4b; }
+
+        .mode-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .mode-card p {
+            font-size: 0.8rem;
+            color: #6b5c4b;
+        }
+
         .book-view {
             background: #fefaf5;
             border-radius: 1.5rem;
@@ -60,16 +106,19 @@
             max-height: 70vh;
             overflow-y: auto;
         }
+
         .art-item {
             margin-bottom: 1.5rem;
             border-bottom: 1px solid #e9e0d4;
             padding-bottom: 1rem;
         }
+
         .art-title {
             font-weight: 700;
             color: #b87c4f;
             margin-bottom: 0.2rem;
         }
+
         .art-original {
             font-family: monospace;
             background: #f3ede5;
@@ -79,7 +128,12 @@
             font-size: 0.8rem;
             margin: 0.3rem 0;
         }
-        .art-trans { font-size: 0.85rem; color: #4b3e2e; }
+
+        .art-trans {
+            font-size: 0.85rem;
+            color: #4b3e2e;
+        }
+
         .art-eval {
             font-size: 0.85rem;
             color: #b1624b;
@@ -89,18 +143,23 @@
             border-radius: 12px;
             display: inline-block;
         }
+
         .test-header {
             display: flex;
             justify-content: space-between;
             margin-bottom: 1rem;
             align-items: baseline;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
+
         .page-info {
             background: #e9e2d8;
             padding: 0.3rem 1rem;
             border-radius: 2rem;
             font-size: 0.85rem;
         }
+
         .progress-bar {
             background: #e9e2d8;
             border-radius: 20px;
@@ -108,6 +167,7 @@
             width: 100%;
             margin: 1rem 0;
         }
+
         .progress-fill {
             background: #b87c4f;
             width: 0%;
@@ -115,6 +175,7 @@
             border-radius: 20px;
             transition: width 0.2s;
         }
+
         .question-card {
             background: #fefaf5;
             border-radius: 1.5rem;
@@ -122,13 +183,21 @@
             margin-bottom: 1rem;
             border: 1px solid #ede3d6;
         }
-        .q-text { font-weight: 500; margin-bottom: 0.8rem; }
+
+        .q-text {
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
         .options {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
             justify-content: space-between;
         }
+
         .opt {
             flex: 1;
             text-align: center;
@@ -140,18 +209,26 @@
             cursor: pointer;
             color: #5e5548;
         }
+
         .opt.selected {
             background: #b87c4f;
             border-color: #b87c4f;
             color: white;
         }
-        .opt span { font-size: 0.7rem; display: block; opacity: 0.8; }
+
+        .opt span {
+            font-size: 0.7rem;
+            display: block;
+            opacity: 0.8;
+        }
+
         .nav-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
             margin: 1.5rem 0 0.5rem;
         }
+
         button {
             background: #2c2b28;
             color: white;
@@ -161,22 +238,27 @@
             font-weight: 600;
             cursor: pointer;
             font-size: 0.9rem;
+            transition: 0.2s;
         }
+
         button.secondary {
             background: #e2d9cf;
             color: #2c2b28;
         }
+
         button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
+
         .result-area {
             background: #f6f2eb;
             border-radius: 1.8rem;
-            padding: 1.8rem;
+            padding: 1.5rem;
             margin-top: 2rem;
             border-left: 6px solid #b87c4f;
         }
+
         .type-badge {
             background: #b87c4f20;
             padding: 0.5rem 1rem;
@@ -185,48 +267,70 @@
             font-weight: bold;
             margin-bottom: 1rem;
         }
+
         .category-section {
             margin-bottom: 1.5rem;
             border-bottom: 1px solid #e0d4c6;
             padding-bottom: 0.8rem;
         }
+
         .category-title {
             font-size: 1.1rem;
             font-weight: 600;
             color: #b87c4f;
             margin-bottom: 0.5rem;
         }
+
         .good-bad-row {
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
             margin-top: 0.3rem;
         }
+
         .good-item, .bad-item {
             flex: 1;
             background: #fffcf7;
             border-radius: 1rem;
             padding: 0.6rem 1rem;
         }
-        .good-item strong { color: #2a7a3e; }
-        .bad-item strong { color: #c25d3a; }
+
+        .good-item strong {
+            color: #2a7a3e;
+        }
+
+        .bad-item strong {
+            color: #c25d3a;
+        }
+
         .small-note {
             font-size: 0.75rem;
             color: #6f6658;
             margin-top: 0.3rem;
         }
+
         .summary-box {
             background: #eae1d4;
             border-radius: 1rem;
             padding: 1rem;
             margin-top: 1.2rem;
         }
-        .hidden { display: none; }
+
+        .hidden {
+            display: none;
+        }
+
         .footer-note {
             font-size: 0.7rem;
             text-align: center;
             color: #aa9f90;
             margin-top: 2rem;
+        }
+
+        .save-image-btn {
+            background: #b87c4f;
+            margin-top: 1rem;
+            width: 100%;
         }
     </style>
 </head>
@@ -236,12 +340,23 @@
     <div class="sub">分页作答 · 揭示你的命术类型</div>
 
     <div class="mode-selector" id="modeSelector">
-        <div class="mode-card" data-mode="rapid"><h3>⚡ 极速测试</h3><p>随机40题 · 分页完成</p></div>
-        <div class="mode-card" data-mode="full"><h3>📚 完整测试</h3><p>全量166题 · 深度自省</p></div>
-        <div class="mode-card" data-mode="book"><h3>📖 命书阅读</h3><p>原文+白话+评价</p></div>
+        <div class="mode-card" data-mode="rapid">
+            <h3>⚡ 极速测试</h3>
+            <p>随机40题 · 分页完成</p>
+        </div>
+        <div class="mode-card" data-mode="full">
+            <h3>📚 完整测试</h3>
+            <p>全量题库 · 深度自省</p>
+        </div>
+        <div class="mode-card" data-mode="book">
+            <h3>📖 命书阅读</h3>
+            <p>原文+白话+评价</p>
+        </div>
     </div>
 
-    <div id="bookView" class="book-view hidden"></div>
+    <div id="bookView" class="book-view hidden">
+        <!-- 命书内容会动态加载，并添加一个返回按钮 -->
+    </div>
 
     <div id="testView" class="hidden">
         <div class="test-header">
@@ -257,242 +372,17 @@
         <div style="text-align:center; margin-top:1rem;">
             <button id="resetTestBtn" class="secondary">🔄 重选模式</button>
         </div>
+        <!-- 答题界面提示，仅在这里显示 -->
+        <div class="footer-note">每题凭直觉作答(5→非常符合，1→完全不符)。每页需全部答完才能进入下一页。</div>
     </div>
 
     <div id="resultArea" class="result-area hidden"></div>
-    <div class="footer-note">每题凭直觉作答(5→非常符合，1→完全不符)。每页需全部答完才能进入下一页。</div>
 </div>
 
 <script>
-    // ----------------------------- 内置题库（共166题） -----------------------------
-    const FULL_QUESTION_BANK = [
-        { "id": 1, "text": "最近一周，我都能保持居住空间整洁有序。", "aspect": "env" },
-        { "id": 2, "text": "我的桌面或房间现在看起来清爽利落。", "aspect": "env" },
-        { "id": 3, "text": "我习惯用完东西立刻归位，不堆积杂物。", "aspect": "env" },
-        { "id": 4, "text": "近期我没有因为环境脏乱而影响心情。", "aspect": "env" },
-        { "id": 5, "text": "近一个月我基本在固定时间睡觉和起床。", "aspect": "routine" },
-        { "id": 6, "text": "我很少熬夜到凌晨，作息很规律。", "aspect": "routine" },
-        { "id": 7, "text": "节假日我的起床时间也与平时差不多。", "aspect": "routine" },
-        { "id": 8, "text": "我每天能保证 7-8 小时的睡眠。", "aspect": "routine" },
-        { "id": 9, "text": "听到未经证实的传闻，我会主动止语，不参与传播。", "aspect": "speech" },
-        { "id": 10, "text": "我从不背后议论同事或朋友的私事。", "aspect": "speech" },
-        { "id": 11, "text": "我说话比较实在，不浮夸。", "aspect": "speech" },
-        { "id": 12, "text": "即使知道别人的秘密，我也能守口如瓶。", "aspect": "speech" },
-        { "id": 13, "text": "我很少因打折或促销冲动购买不必要的东西。", "aspect": "impulse" },
-        { "id": 14, "text": "购物前我会列清单，避免乱买。", "aspect": "impulse" },
-        { "id": 15, "text": "最近三个月我没有因为冲动而后悔消费。", "aspect": "impulse" },
-        { "id": 16, "text": "我能控制住直播带货的诱惑。", "aspect": "impulse" },
-        { "id": 17, "text": "我能专注做完一件事再开始下一件，不会同时开很多头。", "aspect": "focus" },
-        { "id": 18, "text": "工作时我很少被手机消息打断。", "aspect": "focus" },
-        { "id": 19, "text": "我习惯一次只学一个新技能。", "aspect": "focus" },
-        { "id": 20, "text": "最近我完成重要任务时都很专注。", "aspect": "focus" },
-        { "id": 21, "text": "我从不相信快速致富的捷径，宁愿踏实积累。", "aspect": "shortcut" },
-        { "id": 22, "text": "我宁可多花时间走正规流程，也不投机取巧。", "aspect": "shortcut" },
-        { "id": 23, "text": "我不相信“一夜暴富”的神话。", "aspect": "shortcut" },
-        { "id": 24, "text": "我讨厌走捷径的人，自己也不会那样做。", "aspect": "shortcut" },
-        { "id": 25, "text": "遇到阻力时，我会先等等，不强求立刻解决。", "aspect": "timing" },
-        { "id": 26, "text": "我相信“天时”很重要，不会逆势硬来。", "aspect": "timing" },
-        { "id": 27, "text": "我会观察时机，等风来再行动。", "aspect": "timing" },
-        { "id": 28, "text": "事情做不好时，我会想是不是时机未到。", "aspect": "timing" },
-        { "id": 29, "text": "我依然在打磨旧有的专业技能，没有轻易放弃。", "aspect": "root" },
-        { "id": 30, "text": "即使新行业火热，我也没有丢掉老本行。", "aspect": "root" },
-        { "id": 31, "text": "过去积累的人脉资源我还在维护。", "aspect": "root" },
-        { "id": 32, "text": "我不会因为短期利益而抛弃长期根基。", "aspect": "root" },
-        { "id": 33, "text": "初次见面让我不舒服的人，我会保持距离。", "aspect": "discern" },
-        { "id": 34, "text": "我的直觉很准，能避开危险的人。", "aspect": "discern" },
-        { "id": 35, "text": "对态度差的人，我不会再深交。", "aspect": "discern" },
-        { "id": 36, "text": "我懂得通过细节观察一个人的品行。", "aspect": "discern" },
-        { "id": 37, "text": "我很少因情绪不佳而对身边人发火。", "aspect": "anger" },
-        { "id": 38, "text": "即使生气，我也能很快冷静下来。", "aspect": "anger" },
-        { "id": 39, "text": "愤怒时我从不做决定或说伤人话。", "aspect": "anger" },
-        { "id": 40, "text": "最近我没有因为发火而后悔。", "aspect": "anger" },
-        { "id": 41, "text": "团队合作中我愿意让出个人利益，顾全大局。", "aspect": "coop" },
-        { "id": 42, "text": "为了整体成功，我甘愿做幕后。", "aspect": "coop" },
-        { "id": 43, "text": "我从不抢功，喜欢分享荣誉。", "aspect": "coop" },
-        { "id": 44, "text": "我会主动帮助同事完成不属于我的任务。", "aspect": "coop" },
-        { "id": 45, "text": "顺风顺水时我仍保持低调。", "aspect": "humility" },
-        { "id": 46, "text": "获奖或升职后我没有炫耀过。", "aspect": "humility" },
-        { "id": 47, "text": "我很少在社交媒体晒优越。", "aspect": "humility" },
-        { "id": 48, "text": "成绩越好，我反而越谦虚。", "aspect": "humility" },
-        { "id": 49, "text": "别人冒犯我，我基本能一笑而过。", "aspect": "tolerance" },
-        { "id": 50, "text": "我能原谅他人的无心之过。", "aspect": "tolerance" },
-        { "id": 51, "text": "我心里很少记恨别人。", "aspect": "tolerance" },
-        { "id": 52, "text": "我很少因为小事与人争吵。", "aspect": "tolerance" },
-        { "id": 53, "text": "借钱给别人我会立字据或约定还期。", "aspect": "money" },
-        { "id": 54, "text": "我从不轻易担保或借高利贷。", "aspect": "money" },
-        { "id": 55, "text": "我的理财比较保守，不冒进。", "aspect": "money" },
-        { "id": 56, "text": "我会预留应急资金，不把鸡蛋放一个篮子。", "aspect": "money" },
-        { "id": 57, "text": "遇到解不开的难题我会先放一放。", "aspect": "avoid" },
-        { "id": 58, "text": "我不钻牛角尖，相信过几天会有转机。", "aspect": "avoid" },
-        { "id": 59, "text": "最近我成功用“等待”解决了棘手问题。", "aspect": "avoid" },
-        { "id": 60, "text": "我会主动避开无意义的争执。", "aspect": "avoid" },
-        { "id": 61, "text": "我敢直面自己害怕的事情。", "aspect": "fear" },
-        { "id": 62, "text": "越是怕什么，我越会去尝试突破。", "aspect": "fear" },
-        { "id": 63, "text": "最近我克服了一个长期恐惧。", "aspect": "fear" },
-        { "id": 64, "text": "我不逃避困难，会主动迎上去。", "aspect": "fear" },
-        { "id": 65, "text": "倒霉之后我很快就能振作起来。", "aspect": "selfpity" },
-        { "id": 66, "text": "我从不觉得自己命苦。", "aspect": "selfpity" },
-        { "id": 67, "text": "遇到挫折我不会卖惨。", "aspect": "selfpity" },
-        { "id": 68, "text": "我很少在朋友圈发负面情绪。", "aspect": "selfpity" },
-        { "id": 69, "text": "和地位悬殊的人聊天我很自然。", "aspect": "social" },
-        { "id": 70, "text": "我能平等地跟任何人交流。", "aspect": "social" },
-        { "id": 71, "text": "跟不同圈层的人打交道我都不怯场。", "aspect": "social" },
-        { "id": 72, "text": "我不会因为对方身份而改变态度。", "aspect": "social" },
-        { "id": 73, "text": "为了关键目标我敢押上大部分资源。", "aspect": "allin" },
-        { "id": 74, "text": "人生重要关口我选择梭哈。", "aspect": "allin" },
-        { "id": 75, "text": "我有破釜沉舟的勇气。", "aspect": "allin" },
-        { "id": 76, "text": "我愿意冒险去争取大机会。", "aspect": "allin" },
-        { "id": 77, "text": "别人在背后怎么评价我，我真的不在意。", "aspect": "outsider" },
-        { "id": 78, "text": "我不会因为外界评价改变自己。", "aspect": "outsider" },
-        { "id": 79, "text": "我活得比较自我，不太受舆论影响。", "aspect": "outsider" },
-        { "id": 80, "text": "即使被误解，我也不急着解释。", "aspect": "outsider" },
-        { "id": 81, "text": "我从不浪费食物或物品。", "aspect": "waste" },
-        { "id": 82, "text": "最近一个月我没有扔掉任何还能用的东西。", "aspect": "waste" },
-        { "id": 83, "text": "我习惯光盘行动，且珍惜物品。", "aspect": "waste" },
-        { "id": 84, "text": "我会把闲置物品捐掉或卖掉，不直接丢弃。", "aspect": "waste" },
-        { "id": 85, "text": "我做事从容，很少被 deadline 追着跑。", "aspect": "rush" },
-        { "id": 86, "text": "最近工作节奏很稳，没有慌乱。", "aspect": "rush" },
-        { "id": 87, "text": "我很少因为赶时间而出错。", "aspect": "rush" },
-        { "id": 88, "text": "我做事不紧不慢，很有条理。", "aspect": "rush" },
-        { "id": 89, "text": "我从不借助名人或大平台的光环抬高自己。", "aspect": "vanity" },
-        { "id": 90, "text": "跟人交往时不提我认识谁谁。", "aspect": "vanity" },
-        { "id": 91, "text": "我靠实力赢得尊重，不靠人脉背书。", "aspect": "vanity" },
-        { "id": 92, "text": "我讨厌虚荣的人，自己也不会那样做。", "aspect": "vanity" },
-        { "id": 93, "text": "我选择走让自己内心安宁的路。", "aspect": "ease" },
-        { "id": 94, "text": "即使别人反对，我也会听从内心节奏。", "aspect": "ease" },
-        { "id": 95, "text": "目前的生活状态让我感到轻松自在。", "aspect": "ease" },
-        { "id": 96, "text": "我不会为了迎合别人而改变自己的节奏。", "aspect": "ease" },
-        { "id": 97, "text": "遇到失败我第一反应是反思自己。", "aspect": "introspect" },
-        { "id": 98, "text": "我常做复盘，找自己的问题。", "aspect": "introspect" },
-        { "id": 99, "text": "最近一次挫折中我学到了自己的盲点。", "aspect": "introspect" },
-        { "id": 100, "text": "我很少抱怨环境，先从自己身上找原因。", "aspect": "introspect" },
-        { "id": 101, "text": "我敢于拒绝不合理的请求。", "aspect": "boundary" },
-        { "id": 102, "text": "我能温和而坚定地说“不”。", "aspect": "boundary" },
-        { "id": 103, "text": "我不会为了讨好别人而委屈自己。", "aspect": "boundary" },
-        { "id": 104, "text": "我清楚自己的底线，不轻易让步。", "aspect": "boundary" },
-        { "id": 105, "text": "看到朋友成功我真心为他高兴。", "aspect": "content" },
-        { "id": 106, "text": "我很少羡慕或嫉妒他人。", "aspect": "content" },
-        { "id": 107, "text": "我对自己拥有的东西很知足。", "aspect": "content" },
-        { "id": 108, "text": "我不会因为别人更好而焦虑。", "aspect": "content" },
-        { "id": 109, "text": "我清楚自己的优点和缺点。", "aspect": "selfknow" },
-        { "id": 110, "text": "外界评价不会改变我对自己的认知。", "aspect": "selfknow" },
-        { "id": 111, "text": "我对自己有稳定的自我画像。", "aspect": "selfknow" },
-        { "id": 112, "text": "我知道自己适合什么，不适合什么。", "aspect": "selfknow" },
-        { "id": 113, "text": "我相信命运大部分靠自己争取。", "aspect": "agency" },
-        { "id": 114, "text": "运气不好时我就加倍努力。", "aspect": "agency" },
-        { "id": 115, "text": "我很少抱怨环境，更愿意行动改变。", "aspect": "agency" },
-        { "id": 116, "text": "我觉得未来掌握在自己手中。", "aspect": "agency" },
-        { "id": 117, "text": "即使别人都在混日子，我也会主动把公共区域打扫干净。", "aspect": "env" },
-        { "id": 118, "text": "周末和假期，我的起床时间也与平时差不多。", "aspect": "routine" },
-        { "id": 119, "text": "我从不把同事私下告诉我的秘密说给第三人。", "aspect": "speech" },
-        { "id": 120, "text": "看到直播带货的限时抢购，我能忍住不买。", "aspect": "impulse" },
-        { "id": 121, "text": "我会为了练好一个技能，连续几小时不碰手机。", "aspect": "focus" },
-        { "id": 122, "text": "我宁愿多花时间走正规流程，也不托关系走捷径。", "aspect": "shortcut" },
-        { "id": 123, "text": "我相信有些事情急不得，该来的总会来。", "aspect": "timing" },
-        { "id": 124, "text": "即使新工作机会很诱人，我也不会轻易放弃自己积累多年的专业。", "aspect": "root" },
-        { "id": 125, "text": "我会通过观察一个人如何对待服务人员来判断他的品行。", "aspect": "discern" },
-        { "id": 126, "text": "即使被人当面指责，我也能控制情绪不还口。", "aspect": "anger" },
-        { "id": 127, "text": "团队中没人愿意做的杂活，我会主动承担。", "aspect": "coop" },
-        { "id": 128, "text": "获得表扬时，我会把功劳归给帮助过我的人。", "aspect": "humility" },
-        { "id": 129, "text": "别人无意中说错话冒犯我，我很少记仇。", "aspect": "tolerance" },
-        { "id": 130, "text": "借钱给朋友时，我会明确约定还款时间。", "aspect": "money" },
-        { "id": 131, "text": "遇到实在解决不了的问题，我会先放下，过段时间再处理。", "aspect": "avoid" },
-        { "id": 132, "text": "我害怕的事情（如公开演讲、高空），反而会主动去尝试。", "aspect": "fear" },
-        { "id": 133, "text": "倒霉的时候，我很少向别人诉苦。", "aspect": "selfpity" },
-        { "id": 134, "text": "我能和不同年龄、职位的人自然聊天，不分高低。", "aspect": "social" },
-        { "id": 135, "text": "为了重要的目标，我愿意投入大部分积蓄和精力。", "aspect": "allin" },
-        { "id": 136, "text": "别人在背后怎么评价我，我不会太在意。", "aspect": "outsider" },
-        { "id": 137, "text": "我吃饭会光盘，不会剩下饭菜。", "aspect": "waste" },
-        { "id": 138, "text": "我做事很少赶时间，喜欢从容不迫。", "aspect": "rush" },
-        { "id": 139, "text": "我不会为了面子而夸大自己认识谁。", "aspect": "vanity" },
-        { "id": 140, "text": "我选择工作或生活方式时，优先考虑自己是否安心，而不是别人怎么看。", "aspect": "ease" },
-        { "id": 141, "text": "遇到失败，我首先会想自己哪里做得不够好。", "aspect": "introspect" },
-        { "id": 142, "text": "当别人提出不合理的请求时，我能直接拒绝。", "aspect": "boundary" },
-        { "id": 143, "text": "看到别人拥有我没有的东西，我不会嫉妒。", "aspect": "content" },
-        { "id": 144, "text": "我很清楚自己的优点和缺点，不容易被外界评价带偏。", "aspect": "selfknow" },
-        { "id": 145, "text": "我相信运气不好时，只要更努力就能改变。", "aspect": "agency" },
-        { "id": 146, "text": "我会定期清理不再用的物品，捐赠或转卖，而不是直接扔掉。", "aspect": "waste" },
-        { "id": 147, "text": "开会或上课时，我不会同时刷手机处理其他事。", "aspect": "focus" },
-        { "id": 148, "text": "我不会因为朋友说“这个很划算”就跟着一起买。", "aspect": "impulse" },
-        { "id": 149, "text": "即使心情不好，我也不会在社交媒体上发泄。", "aspect": "speech" },
-        { "id": 150, "text": "我每天睡觉和起床的时间误差不超过一小时。", "aspect": "routine" },
-        { "id": 151, "text": "我讨厌攀附权贵，靠实力说话。", "aspect": "vanity" },
-        { "id": 152, "text": "失败后我会写复盘笔记，分析自己哪些决策错了。", "aspect": "introspect" },
-        { "id": 153, "text": "我不会因为对方是领导就刻意讨好或畏缩。", "aspect": "social" },
-        { "id": 154, "text": "我可以一个人待着也很自在，不依赖他人陪伴。", "aspect": "ease" },
-        { "id": 155, "text": "我相信命运大部分可以由自己创造。", "aspect": "agency" },
-        { "id": 156, "text": "我很少羡慕别人的生活，觉得自己拥有的已经很好。", "aspect": "content" },
-        { "id": 157, "text": "当别人要求我帮忙做超出我能力的事，我会明确说“不行”。", "aspect": "boundary" },
-        { "id": 158, "text": "我敢于在关键决策上赌上全部筹码。", "aspect": "allin" },
-        { "id": 159, "text": "我会把闲置物品送给需要的人，而不是堆在角落。", "aspect": "waste" },
-        { "id": 160, "text": "我很少因为别人说“你应该怎样”而改变自己的计划。", "aspect": "outsider" },
-        { "id": 161, "text": "我能在压力下保持冷静，不慌乱。", "aspect": "anger" },
-        { "id": 162, "text": "我习惯提前完成工作，不拖到最后一刻。", "aspect": "rush" },
-        { "id": 163, "text": "我敢于承认自己的错误，并向对方道歉。", "aspect": "introspect" },
-        { "id": 164, "text": "我清楚自己适合什么样的伴侣和工作环境。", "aspect": "selfknow" },
-        { "id": 165, "text": "我不会因为一次失败就否定自己。", "aspect": "selfpity" },
-        { "id": 166, "text": "我很少参与办公室政治，不站队不传话。", "aspect": "speech" }
-    ];
-
-    // ----------------------------- 内置命书全文（共52术） -----------------------------
-    const BOOK_DATA = [
-        { "title": "第一术 · 洒扫庭除", "original": "洒扫庭除，使身不近秽；肃洁仪容，使秽不附身。勿卧于污秽熏天、杂然无序之所，勿寝于阴暗潮湿之地。", "translation": "打扫环境、整洁自身，污秽不近则气运清明。干净是运气的第一道门槛。", "evaluation": "" },
-        { "title": "第二术 · 应时作息", "original": "应时而兴，应时而食，应时而作，应时而息。四时有序，心神乃一。", "translation": "规律作息让心神安宁，心神宁则气运聚。", "evaluation": "" },
-        { "title": "第三术 · 语善而真", "original": "言讷而实，语善而真。不泄恶语，不传妄言，不涉谤讥。君子之运，发于唇齿。", "translation": "真诚善良的言语是福气开关，妄言恶语会驱散好运。", "evaluation": "" },
-        { "title": "第四术 · 戒贪知止", "original": "以见利之明处世，财可求也。以侵害之心得财，悖逆天道，必遭反报：非数倍偿赎，即气运消减，身心俱伤。", "translation": "不贪非分之物，不侵害他人。若以恶求财，必数倍偿还。", "evaluation": "道德层面得到报应，而非玄学。" },
-        { "title": "第五术 · 逐一面之", "original": "旧过过，未未到。事有先后，逐一面之，戒之在贪。", "translation": "一次只专注一件事。贪多求快会消耗品质。", "evaluation": "" },
-        { "title": "第六术 · 不趋捷径", "original": "今人多趋捷径，然未察其径塞途拥，而康庄之衢，阒其无人。若行事觉轻安自得者，此即汝之坦途也。", "translation": "捷径拥挤易翻车，踏实大道虽慢必达。", "evaluation": "" },
-        { "title": "第六术 · 顺势待时", "original": "天时至，气运生，体察而顺应之。若能与道偕行，则如顺水行舟，无往不利。", "translation": "等待时机，顺势而为，不逆流死磕。", "evaluation": "" },
-        { "title": "第八术 · 旧业勿弃", "original": "业之道，旧业勿轻弃。虽利薄，然根基之所系，存身之本也。若新业既成，根基稳固，方可择之而从。若二者得兼，善之善者也。", "translation": "不要轻易抛弃积累了多年的技能或人脉，它们是低谷时的救命稻草。", "evaluation": "" },
-        { "title": "第九术 · 识人避害", "original": "初遇生人，若生厌憎，心神不安，速避之。见使君怡然者，可近而交，然须慎察其行。必试其信义，此乃立世之本。若察其信劣，急避如避刃矢。", "translation": "相信直觉，让不舒服的人远离。日久见人心。", "evaluation": "先保持距离，多观察几次再决定！" },
-        { "title": "第十术 · 贵人流转", "original": "父母者，天授贵人也；困厄中施以援手者，贵人也；指迷津于惘途者，贵人也；甘苦与共之友，贵人也；生死相托之夫妻，互为贵人也。然贵人非固守一世，乃如云水流转不息。当明眸察周遭之贵气，承其瑞意，则如握机缘之枢机。", "translation": "贵人并非固定，善待身边人，自己亦做他人贵人。", "evaluation": "" },
-        { "title": "第十一术 · 慎言未成", "original": "吾观处世之道，事未成勿泄于未预者，利既获勿宣于不知者。倘炫其功，恐招非议而损其益。", "translation": "事情没成之前不要张扬，成功后更别炫耀。", "evaluation": "" },
-        { "title": "第十二术 · 竭诚以赴", "original": "凡所当为之事，必竭诚以赴，务尽其能。若存苟且之心，或怀怠惰之意，敷衍塞责，则不如止而不为。盖草率而成者，恐招无妄之灾，遗患无穷，终损己身之气运。故知止不为，亦明哲之道也。", "translation": "该做的事全力以赴，不想做就不要做，最忌半吊子。", "evaluation": "" },
-        { "title": "第十三术 · 涤尽浮光", "original": "识人者，当涤尽浮光，弃置衔冕，略其形骸，屏绝人议。惟观其言行之微，察其举止之细，则彼若素缣一卷，自将仁善鄙诈，贞邪曲直，书而示汝矣。", "translation": "抛开头衔外貌，只看细节言行，才能看清一个人。", "evaluation": "" },
-        { "title": "第十四术 · 御人以疑", "original": "御人当以疑始，必待其事毕。绳可束其身，岂能羁其志？人为灵长，旦暮异焉，唯以疑目察之，乃见其纤隐之变。", "translation": "管理或合作时保持审慎，结果出来后再下判断。", "evaluation": "" },
-        { "title": "第十五术 · 判事三境", "original": "判事之成否，其下者取利，其次者取鉴，其至者观乎气运之蓄。", "translation": "低阶看利益，中阶学经验，高阶洞察大势积蓄。", "evaluation": "" },
-        { "title": "第十六术 · 三等交游", "original": "交游之众，当分三等：其一唯利是图，毋涉情义；其二唯情是守，毋涉利欲；其三情利皆可谋。得此辈愈众，则气运愈昌。", "translation": "分清楚谁谈利益谁谈感情，情利双收之人是贵人。", "evaluation": "" },
-        { "title": "第十七术 · 乘势不骄", "original": "方时运至际，万象皆佐。所当为者，惟体察而顺应之，乘势而起。然骄矜造作，挥霍无度，实悖逆福运。慎之。", "translation": "顺境不飘，骄傲会作没运气。", "evaluation": "" },
-        { "title": "第十八术 · 共事忘私", "original": "共事欲成，首在谋宜而见远，次在尽其才，至要者忘私。三者备，则事可成其八九。余者，顺天时而已。", "translation": "忘掉私心，团队才能成就你。", "evaluation": "" },
-        { "title": "第十九术 · 试诚交友", "original": "观一人，细察之，见其品性端良，乃欲与之交。可试询其隐衷，若其诚言不讳，则证其心已视尔为友矣。", "translation": "愿意向你坦诚内心的人，才把你当朋友。", "evaluation": "分天生嘴不严和慢热谨慎" },
-        { "title": "第二十术 · 自疏者福", "original": "逢困厄而能自疏者，有福之人也；临险阻犹可坦然而笑者，具大运之相也。", "translation": "能自我开解困境，遇险依然微笑，是有大福之人。", "evaluation": "" },
-        { "title": "第二十一术 · 众悦险伏", "original": "众悦者，气运亨也，然险亦伏于侧矣。", "translation": "被众人喜欢时要警惕危险潜伏。", "evaluation": "" },
-        { "title": "第二十二术 · 夫妇同心", "original": "夫妇之道，首以信为万事之基，次则消弭龃龉，复可截长续短，尤贵同心以御外。如此，则贵人之气可臻其极，偕老之道得以久长。", "translation": "信任、消磨矛盾、共同对外，可臻极运。", "evaluation": "" },
-        { "title": "第二十三术 · 勿假其名", "original": "勿以交贵者为荣，勿假其名以自壮。若此，是转时运于人，而己之气数益损矣。", "translation": "借他人光环虚荣，等于拱手让运。", "evaluation": "可以提，别全靠；可以借，别攀附。" },
-        { "title": "第二十四术 · 平等相对", "original": "欲得言谈之真味，必以平等相对。至亲犹然。倘彼执守尊卑之见，则所对无非虚文俗套耳。", "translation": "放下尊卑，才能得到真心交流。", "evaluation": "" },
-        { "title": "第二十五术 · 孤注之志", "original": "出资市金，逐盐铁之利者，如博戏，肇端当有尽付一掷之志。所谓必成者，诈也。至若合营之事，尤为险途。", "translation": "投资要有全部亏光的觉悟，说必成的都是骗子。", "evaluation": "" },
-        { "title": "第二十六术 · 善用财者", "original": "善用财者，不啻重于善牟利者也。不擅牟利，乞食而已；苟不谙用财之道，或致身困，乃至罹祸倾覆。", "translation": "会花钱比会赚钱更重要。", "evaluation": "" },
-        { "title": "第二十七术 · 勿强险事", "original": "勿强求险巇之事以耽危殆之娱，如此则大伤气运。向者无恙，惟气运未尽耳。", "translation": "不要为了刺激去作死，没出事只是运气还没用完。", "evaluation": "可以为了志向去冒险，但不要为了娱乐去冒险。" },
-        { "title": "第二十八术 · 内心无樊", "original": "勿自贻伊戚，凡桎梏皆厄气运。外锢虽不可御，内心毋复筑樊牢。", "translation": "外界的枷锁躲不开，但不要在心里再修一个牢笼。", "evaluation": "" },
-        { "title": "第二十九术 · 赏物勿溺", "original": "鉴物犹鉴人，辨其质，可赏而勿溺；溺则神气为所夺。", "translation": "可以欣赏美好的东西，沉迷会被吸走精气神。", "evaluation": "" },
-        { "title": "第三十术 · 绝不可费", "original": "用度可奢，然绝不可费。费者，若财货食粮；究其本，费运气也。", "translation": "浪费任何物品都是在消耗自己的气运。", "evaluation": "" },
-        { "title": "第三十一术 · 勿急戒躁", "original": "勿急，心躁易失。盖急与运之频不相合也。", "translation": "急躁和运气的频率相冲，慢下来才能接住好运。", "evaluation": "" },
-        { "title": "第三十二术 · 勿占人便", "original": "勿占人财利之便，占其便则遗运于人；不患人取财利之便，取其便则遗运于己。", "translation": "占了别人的便宜，会把自己的运送给对方。", "evaluation": "" },
-        { "title": "第三十三术 · 慎用己财", "original": "必费己财；未入囊者，非己有也。若不得已而假人之财，须报之以利。慎勿假占不偿，恐运尽而祸至。", "translation": "花自己的钱，借钱要给利息，赖账会招灾。", "evaluation": "" },
-        { "title": "第三十四术 · 怒则智散", "original": "怒则智散，亦损气数。", "translation": "发火时智商归零，运气也跑掉。", "evaluation": "" },
-        { "title": "第三十五术 · 避而俟之", "original": "遇不可解之事，避而俟之，或乃上策；强为之者，多反受其咎。", "translation": "解决不了就先放下，硬刚反而受害。", "evaluation": "如果事态恶化，则另寻他法，避非唯一解。" },
-        { "title": "第三十六术 · 正对内惧", "original": "正对内惧，乃得天眷。", "translation": "直面恐惧，上天才会眷顾你。", "evaluation": "" },
-        { "title": "第三十七术 · 勿自怜", "original": "勿自怜，时运亦厌之。", "translation": "别自己可怜自己，好运最讨厌自怜的人。", "evaluation": "" },
-        { "title": "第三十八术 · 百计图出", "original": "坠于深壑；偃卧无为，常也；百计图出，乃大运之兆。", "translation": "躺平等死是常态，拼命挣扎才是大运的前兆。", "evaluation": "" },
-        { "title": "第三十九术 · 念有非无", "original": "计其所有而不念所无者，斯为吉人之兆也。", "translation": "数自己有的，不惦记没有的，是有福之人。", "evaluation": "" },
-        { "title": "第四十术 · 灵根身树", "original": "灵若根，身若树，运若叶。叶虽凋落，苟灵不死、身不枯，逢其时，终见枝繁叶茂。", "translation": "根没烂，树干没空，叶子总会再长出来。", "evaluation": "" },
-        { "title": "第四十一术 · 豁尽所有", "original": "豁尽所有乃制胜之枢，面厚如革实为初基。事成则万口争颂，功败则形迹俱冥。故无须怀讥诮之虞于方寸，洞明此理者，天岂肯薄待之？昔有破釜沉舟之志，而世惟传奏凯之歌，谁见折戟沉沙之迹？诚能心无滞碍，行不疑迟，既悟玄机，气运自随。", "translation": "豁出去，是赢的关键。脸皮厚，是起步的门槛。赢了，万人颂；输了，无人提。敢梭哈，能接受满盘皆输，运气反而跟着你。", "evaluation": "能接受满盘皆输，就豁出去。" },
-        { "title": "第四十二术 · 务修者成", "original": "逐成者，众庶之所趋；务修者，达人之所怀。怀修之人，是谓成矣。", "translation": "追求外面的成就谁都行，内修的人才是真成就。", "evaluation": "" },
-        { "title": "第四十三术 · 善待左右", "original": "不图报而善待左右，乃汝之福也。", "translation": "对身边人好不求回报，本身就是福气。", "evaluation": "" },
-        { "title": "第四十四术 · 逢凶化吉", "original": "逢凶时，当先谋化吉之道。", "translation": "遇到坏事先想怎么把它变成好事。", "evaluation": "" },
-        { "title": "第四十五术 · 绝期于人", "original": "绝期于人，得之鸿运。", "translation": "不把全部期望压在一个人身上，鸿运自来。", "evaluation": "不是不能有任何期望，而是不要把全部期望压在一个人身上。" },
-        { "title": "第四十六术 · 能宽则宽", "original": "能宽则宽，盖宽乃居高临下之态也。", "translation": "宽容是强者的姿态。", "evaluation": "" },
-        { "title": "第四十七术 · 识己", "original": "识人、识物、识己，其道一也。", "translation": "看清自己和看透事物是同一套功夫。", "evaluation": "第十三术（识人）：涤尽浮光，弃置衔冕，略其形骸，屏绝人议。惟观其言行之微，察其举止之细。第二十九术（鉴物）：鉴物犹鉴人，辨其质，可赏而勿溺。" },
-        { "title": "第四十八术 · 容受御运", "original": "容受万事，御运在己。洞明造化，即得真运。", "translation": "接受一切发生，命运在你手里。", "evaluation": "" },
-        { "title": "第四十九术 · 讼过内省", "original": "事之不成，必在己也。讼过而内省，克己而复正。", "translation": "失败时先找自己的原因，从自身破局。", "evaluation": "客观的改变不了，从自身出发破局，拿回主动权。" },
-        { "title": "第五十术 · 众口非我", "original": "众口之我，本非真我；性在方寸，不系唇舌。明其性、顺其道，则大运已在焉。", "translation": "别人嘴里的你不是真的你。把本性认清楚了，顺着该走的路去走，大运就已经在你身上了。", "evaluation": "别人眼中的你，有一部分是真的你，有一部分是你给别人看到的你。择其善者而从之，其不善者而弃之。" },
-        { "title": "第五十一术 · 无待常适", "original": "无待而常适者，天之所厚，亦至运也。", "translation": "不靠外界条件也能自在的人，是天选之子。", "evaluation": "大部分人都是「有待而常适」，这是人类的出厂设置。此乃果，源于五十二术之内观。" },
-        { "title": "第五十二术 · 观心察念", "original": "观喜怒于己身，察起心动念，此乃运中之至运也。", "translation": "观察自己的喜怒哀乐，觉察念头如何生灭，这是好运中最好的运气。", "evaluation": "此乃因。能观己之喜怒、察起心动念，方为修运之根本。第五十一术“无待而常适”是其果——因上着力，果上随缘。" }
-    ];
-
-    // ----------------------------- 页面逻辑（与原版相同） -----------------------------
-    let fullQuestionBank = FULL_QUESTION_BANK;
-    let bookData = BOOK_DATA;
+    // ----------------------------- 全局变量 -----------------------------
+    let fullQuestionBank = [];
+    let bookData = [];
     let currentQuestions = [];
     let currentAnswers = [];
     let pageSize = 5;
@@ -513,7 +403,7 @@
     const progressFill = document.getElementById('progressFill');
     const resultArea = document.getElementById('resultArea');
 
-    // 分类映射
+    // 分类映射（与之前一致）
     const categoryMap = {
         "环境与自律": ["env", "routine", "waste", "rush"],
         "言语与社交": ["speech", "social", "outsider", "vanity"],
@@ -531,6 +421,7 @@
         root: "守旧根基", selfknow: "自知之明", ease: "内心安宁", impulse: "克制冲动"
     };
 
+    // ----------------------------- 辅助函数 -----------------------------
     function updateProgress() {
         const answered = currentAnswers.filter(v => v !== null).length;
         totalProgressSpan.innerText = answered;
@@ -623,6 +514,7 @@
         }
     }
 
+    // 人格类型分析
     function getPersonalityType(aspectScoresMap) {
         let results = [];
         for (let [asp, data] of aspectScoresMap.entries()) {
@@ -644,6 +536,27 @@
             return { name: "火急火燎型", desc: "你容易急躁或发火，这会扰乱心智和运气。学会慢下来、深呼吸，机会自会浮现。" };
         } else {
             return { name: "中正平和者", desc: "你各方面较为均衡，无明显短板。继续在“识己”和“内省”上深耕，可臻上乘。" };
+        }
+    }
+
+    // 保存结果为图片
+    async function saveResultAsImage() {
+        const resultElement = document.getElementById('resultArea');
+        if (!resultElement) return;
+        try {
+            const canvas = await html2canvas(resultElement, {
+                scale: 2,
+                backgroundColor: '#f6f2eb',
+                logging: false,
+                useCORS: false
+            });
+            const link = document.createElement('a');
+            link.download = 'yiming_result.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        } catch (err) {
+            console.error('截图失败', err);
+            alert('生成图片失败，可尝试截图保存');
         }
     }
 
@@ -694,19 +607,29 @@
         let advice = `你的气运根基稳固于「${strongAspects.slice(0,3).join('、') || '多个方面'}」，而「${weakAspects.slice(0,3).join('、') || '少数方面'}」是需要留意的缝隙。建议重点阅读命书中相关条目，并在日常生活中多加觉察。`;
         
         html += `<div class="summary-box"><strong>📖 综合箴言</strong><br>${advice}</div>`;
-        html += `<button id="backToModeBtn" class="secondary" style="margin-top:1rem;">🏠 返回模式选择</button>`;
+        html += `<div style="display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap;">
+                    <button id="backToModeBtn" class="secondary" style="flex:1;">🏠 返回模式选择</button>
+                    <button id="saveImageBtn" class="save-image-btn" style="flex:1;">📸 保存结果为图片</button>
+                </div>`;
         resultArea.innerHTML = html;
         resultArea.classList.remove('hidden');
         testView.classList.add('hidden');
+        
         document.getElementById('backToModeBtn')?.addEventListener('click', () => {
             resultArea.classList.add('hidden');
             modeSelector.style.display = 'flex';
             testView.classList.add('hidden');
             bookView.classList.add('hidden');
         });
+        document.getElementById('saveImageBtn')?.addEventListener('click', saveResultAsImage);
     }
 
+    // 开始测试
     function startTest(mode) {
+        if (!fullQuestionBank.length) {
+            alert('题库尚未加载完成，请稍后重试');
+            return;
+        }
         if (mode === 'rapid') {
             const shuffled = [...fullQuestionBank];
             for (let i=shuffled.length-1; i>0; i--) {
@@ -728,7 +651,12 @@
         renderCurrentPage();
     }
 
+    // 命书阅读界面（带返回按钮）
     function showBookView() {
+        if (!bookData.length) {
+            alert('命书数据加载失败');
+            return;
+        }
         modeSelector.style.display = 'none';
         testView.classList.add('hidden');
         bookView.classList.remove('hidden');
@@ -742,7 +670,14 @@
             if (art.evaluation) html += `<div class="art-eval">✍️ ${art.evaluation}</div>`;
             html += `</div>`;
         }
+        html += `<div style="text-align:center; margin-top:1.5rem;"><button id="bookBackBtn" class="secondary">🏠 返回主菜单</button></div>`;
         bookView.innerHTML = html;
+        document.getElementById('bookBackBtn')?.addEventListener('click', () => {
+            modeSelector.style.display = 'flex';
+            testView.classList.add('hidden');
+            bookView.classList.add('hidden');
+            resultArea.classList.add('hidden');
+        });
     }
 
     function resetToModeSelect() {
@@ -752,20 +687,49 @@
         resultArea.classList.add('hidden');
     }
 
-    // 绑定模式卡片事件
-    document.querySelectorAll('.mode-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const mode = card.dataset.mode;
-            if (mode === 'rapid') startTest('rapid');
-            else if (mode === 'full') startTest('full');
-            else if (mode === 'book') showBookView();
-            document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
-            card.classList.add('active');
+    // 加载外部 JSON 数据
+    async function loadData() {
+        try {
+            const [qRes, bRes] = await Promise.all([
+                fetch('questions.json'),
+                fetch('book.json')
+            ]);
+            if (!qRes.ok || !bRes.ok) throw new Error('HTTP状态异常');
+            const qData = await qRes.json();
+            const bData = await bRes.json();
+            fullQuestionBank = qData.questions;
+            bookData = bData.books;
+            console.log(`题库加载完成: ${fullQuestionBank.length} 题，命书 ${bookData.length} 条`);
+        } catch (err) {
+            console.error('加载失败', err);
+            alert('数据加载失败，请检查网络或刷新重试\n确保 questions.json 和 book.json 文件存在且格式正确');
+        }
+    }
+
+    // 绑定模式卡片事件（在数据加载完成后也要绑定，但可以先绑定，内部判断数据）
+    function bindEvents() {
+        document.querySelectorAll('.mode-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const mode = card.dataset.mode;
+                if (mode === 'rapid') startTest('rapid');
+                else if (mode === 'full') startTest('full');
+                else if (mode === 'book') showBookView();
+                document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+            });
         });
+        resetTestBtn.addEventListener('click', resetToModeSelect);
+        prevBtn.addEventListener('click', goPrevPage);
+        nextBtn.addEventListener('click', goNextPage);
+    }
+
+    // 初始化
+    loadData().then(() => {
+        bindEvents();
+    }).catch(() => {
+        // 如果加载失败，仍然绑定事件但会提示数据未就绪
+        bindEvents();
     });
-    resetTestBtn.addEventListener('click', resetToModeSelect);
-    prevBtn.addEventListener('click', goPrevPage);
-    nextBtn.addEventListener('click', goNextPage);
 </script>
 </body>
 </html>
