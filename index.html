@@ -142,6 +142,7 @@
             padding: 0.2rem 0.5rem;
             border-radius: 12px;
             display: inline-block;
+            white-space: pre-line; /* 允许换行 */
         }
         .test-header {
             display: flex;
@@ -390,7 +391,7 @@
     const progressFill = document.getElementById('progressFill');
     const resultArea = document.getElementById('resultArea');
 
-    // 分类映射（仅用于结果页，与命书阅读无关）
+    // 分类映射（用于结果页）
     const categoryMap = {
         "环境与自律": ["env", "routine", "waste", "rush"],
         "言语与社交": ["speech", "social", "outsider", "vanity"],
@@ -684,7 +685,7 @@
         renderCurrentPage();
     }
 
-    // ==================== 修改后的命书阅读（按分类分组） ====================
+    // ----------------------------- 命书阅读（按分类分组，评价换行） -----------------------------
     function showBookView() {
         if (!bookData.length) {
             alert('命书数据加载失败');
@@ -695,7 +696,7 @@
         bookView.classList.remove('hidden');
         resultArea.classList.add('hidden');
 
-        // 定义分类顺序（与之前保持一致）
+        // 定义分类顺序
         const categoryOrder = ["环境与自律", "言语与社交", "心性与情绪", "处事与决策", "人际与边界", "根基与识己"];
         // 按分类分组
         const grouped = {};
@@ -708,34 +709,45 @@
         let html = `<div class="book-sticky-header">
                         <button id="bookTopBackBtn" class="secondary" style="padding:0.3rem 1rem;">🏠 返回主菜单</button>
                     </div>`;
-        // 按顺序输出分类
         for (let cat of categoryOrder) {
             if (grouped[cat] && grouped[cat].length) {
                 html += `<div class="book-category">
                             <div class="book-category-title">📖 ${cat}</div>`;
                 for (let art of grouped[cat]) {
+                    // 处理评价换行：将“第十三术”和“第二十九术”前的句号替换为换行，并处理可能的空格
+                    let evalHtml = '';
+                    if (art.evaluation) {
+                        let evalText = art.evaluation;
+                        // 先替换“第十三术”和“第二十九术”前的句号和空格为换行符
+                        let formatted = evalText.replace(/。\s*第十三术/g, '。<br>第十三术');
+                        formatted = formatted.replace(/。\s*第二十九术/g, '。<br>第二十九术');
+                        // 如果评价内容本身包含换行符，直接保留
+                        evalHtml = `<div class="art-eval">✍️ ${formatted}</div>`;
+                    }
                     html += `<div class="art-item">
                                 <div class="art-title">${art.title}</div>
                                 <div class="art-original">${art.original}</div>
-                                <div class="art-trans">📖 ${art.translation}</div>`;
-                    if (art.evaluation) {
-                        html += `<div class="art-eval">✍️ ${art.evaluation}</div>`;
-                    }
-                    html += `</div>`;
+                                <div class="art-trans">📖 ${art.translation}</div>
+                                ${evalHtml}
+                            </div>`;
                 }
                 html += `</div>`;
             }
         }
-        // 处理其他未分类的（如果有）
         if (grouped["其他"] && grouped["其他"].length) {
-            html += `<div class="book-category">
-                        <div class="book-category-title">📖 其他</div>`;
+            html += `<div class="book-category"><div class="book-category-title">📖 其他</div>`;
             for (let art of grouped["其他"]) {
+                let evalHtml = '';
+                if (art.evaluation) {
+                    let formatted = art.evaluation.replace(/。\s*第十三术/g, '。<br>第十三术');
+                    formatted = formatted.replace(/。\s*第二十九术/g, '。<br>第二十九术');
+                    evalHtml = `<div class="art-eval">✍️ ${formatted}</div>`;
+                }
                 html += `<div class="art-item">
                             <div class="art-title">${art.title}</div>
                             <div class="art-original">${art.original}</div>
                             <div class="art-trans">📖 ${art.translation}</div>
-                            ${art.evaluation ? `<div class="art-eval">✍️ ${art.evaluation}</div>` : ''}
+                            ${evalHtml}
                         </div>`;
             }
             html += `</div>`;
