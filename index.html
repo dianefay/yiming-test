@@ -35,14 +35,13 @@
             .sub { font-size: 0.85rem; margin-left: 0.5rem; }
             .mode-card h3 { font-size: 0.95rem; }
             .mode-card p { font-size: 0.7rem; }
-            .opt { font-size: 0.75rem; padding: 0.5rem 0; }  /* 增大点击区域 */
-            .question-card { padding: 0.6rem; margin-bottom: 0.8rem; } /* 缩小行间距 */
+            .opt { font-size: 0.75rem; padding: 0.5rem 0; }
+            .question-card { padding: 0.6rem; margin-bottom: 0.8rem; }
             .q-text { font-size: 0.85rem; margin-bottom: 0.5rem; }
             .page-info { font-size: 0.75rem; padding: 0.2rem 0.8rem; }
             .good-item, .bad-item { padding: 0.4rem 0.6rem; }
             .good-item strong, .bad-item strong { font-size: 0.8rem; }
             .category-title { font-size: 1rem; }
-            .small-note { font-size: 0.65rem; }
             .summary-box { font-size: 0.85rem; }
             button { padding: 0.5rem 1rem; font-size: 0.8rem; }
             .type-badge { font-size: 0.9rem; }
@@ -61,14 +60,16 @@
             margin: 0.3rem 0 1.5rem 1rem;
             font-size: 0.9rem;
         }
+
+        /* 模式选择改为上下排列 */
         .mode-selector {
             display: flex;
+            flex-direction: column;
             gap: 1rem;
             margin-bottom: 2rem;
-            flex-wrap: wrap;
         }
         .mode-card {
-            flex: 1;
+            width: 100%;
             background: #fefaf5;
             border: 2px solid #ede3d6;
             border-radius: 1.5rem;
@@ -93,11 +94,11 @@
             overflow-y: auto;
             position: relative;
         }
-        /* 回到顶部按钮 */
+        /* 返回顶部按钮位置调整 */
         .back-to-top {
             position: fixed;
             bottom: 20px;
-            right: 20px;
+            right: calc(50% - 430px + 20px);
             background: #b87c4f;
             color: white;
             width: 44px;
@@ -114,6 +115,11 @@
         }
         .back-to-top:hover {
             background: #9a623d;
+        }
+        @media (max-width: 860px) {
+            .back-to-top {
+                right: 20px;
+            }
         }
         @media (max-width: 600px) {
             .back-to-top {
@@ -397,6 +403,17 @@
             color: #6b5c4b;
             border-left: 4px solid #b87c4f;
         }
+        /* 结果页按钮等宽 */
+        .result-buttons {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .result-buttons button {
+            flex: 1 1 0%;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -405,9 +422,18 @@
     <div class="sub">分页作答 · 揭示你的命术类型</div>
 
     <div class="mode-selector" id="modeSelector">
-        <div class="mode-card" data-mode="rapid"><h3>⚡ 极速测试</h3><p>随机40题 · 分页完成</p></div>
-        <div class="mode-card" data-mode="full"><h3>📚 完整测试</h3><p>全量题库 · 深度自省</p></div>
-        <div class="mode-card" data-mode="book"><h3>📖 命书阅读</h3><p>原文+白话+评价</p></div>
+        <div class="mode-card" data-mode="rapid">
+            <h3>⚡ 极速测试</h3>
+            <p>随机40题 · 分页完成</p>
+        </div>
+        <div class="mode-card" data-mode="full">
+            <h3>📚 完整测试</h3>
+            <p>全量题库 · 深度自省</p>
+        </div>
+        <div class="mode-card" data-mode="book">
+            <h3>📖 命书阅读</h3>
+            <p>原文+白话+评价</p>
+        </div>
     </div>
 
     <div id="bookView" class="book-view hidden"></div>
@@ -533,7 +559,6 @@
                     updateProgress();
                     updateNavButtons();
                     
-                    // 自动翻页：当前页完整且不是最后一页且该页尚未自动翻过
                     if (isCurrentPageComplete() && currentPage < totalPages - 1 && !pageAutoNavigated[currentPage]) {
                         pageAutoNavigated[currentPage] = true;
                         goNextPage();
@@ -584,7 +609,6 @@
 
     // 按 group 去重抽取（每个 group 最多抽一题）
     function selectQuestionsByGroup(totalCount, shuffleAll = false) {
-        // 按 group 分组
         const groupMap = new Map();
         for (let q of fullQuestionBank) {
             const g = q.group;
@@ -592,7 +616,6 @@
             groupMap.get(g).push(q);
         }
         const groups = Array.from(groupMap.keys());
-        // 从每个 group 中随机抽取一题
         let selected = [];
         for (let g of groups) {
             const groupQuestions = groupMap.get(g);
@@ -600,25 +623,20 @@
             selected.push(groupQuestions[randomIndex]);
         }
         if (shuffleAll) {
-            // 完整测试：返回全部组抽一题后的数组（已经是随机顺序，但可进一步打乱）
             for (let i = selected.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [selected[i], selected[j]] = [selected[j], selected[i]];
             }
             return selected;
         } else {
-            // 极速测试：如果 selected 长度 >= totalCount，直接取前 totalCount；否则需要补充
             if (selected.length >= totalCount) {
-                // 随机取 totalCount 个
                 for (let i = selected.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
                     [selected[i], selected[j]] = [selected[j], selected[i]];
                 }
                 return selected.slice(0, totalCount);
             } else {
-                // 如果不足（理论上 group 有 158 题，远大于40），但为了安全，补抽剩余
                 let remaining = [...fullQuestionBank];
-                // 移除已选中的题目
                 for (let s of selected) {
                     const idx = remaining.findIndex(r => r.id === s.id);
                     if (idx !== -1) remaining.splice(idx, 1);
@@ -701,13 +719,76 @@
         return bookData.find(art => art.title.includes(keyword));
     }
 
+    function copyResultAsMarkdown() {
+        // 从当前结果页 DOM 中提取内容并转为 Markdown
+        const resultDiv = document.getElementById('resultArea');
+        if (!resultDiv) return;
+        // 获取命术类型
+        const typeBadge = resultDiv.querySelector('.type-badge');
+        const typeName = typeBadge ? typeBadge.innerText.replace('🏷️ 你的命术类型：', '') : '未知';
+        const typeDesc = resultDiv.querySelector('.type-badge + p')?.innerText || '';
+        // 获取各分类的长处和可修
+        let sections = [];
+        const categorySections = resultDiv.querySelectorAll('.category-section');
+        categorySections.forEach(section => {
+            const title = section.querySelector('.category-title')?.innerText.replace('📁 ', '') || '';
+            const good = section.querySelector('.good-item strong')?.nextSibling?.textContent.trim() || '';
+            const badElem = section.querySelector('.bad-item strong');
+            let bad = '';
+            if (badElem) {
+                const parent = badElem.parentElement;
+                bad = parent.innerText.replace(badElem.innerText, '').trim();
+            }
+            sections.push({ title, good, bad });
+        });
+        // 获取综合箴言
+        const summary = resultDiv.querySelector('.summary-box')?.innerText.replace('📖 综合箴言', '').trim() || '';
+        // 获取相关命书条目
+        let relatedItems = [];
+        const relatedDiv = resultDiv.querySelector('.related-arts');
+        if (relatedDiv) {
+            const items = relatedDiv.querySelectorAll('.related-item');
+            items.forEach(item => {
+                const title = item.querySelector('strong')?.innerText || '';
+                const orig = item.querySelector('.orig')?.innerText || '';
+                const trans = item.querySelector('.trans')?.innerText.replace('📖 ', '') || '';
+                const evalText = item.querySelector('.art-eval')?.innerText.replace('✍️ ', '') || '';
+                relatedItems.push({ title, orig, trans, eval: evalText });
+            });
+        }
+
+        let markdown = `# 🧭 命术镜鉴\n\n`;
+        markdown += `**你的命术类型：${typeName}**\n\n`;
+        markdown += `${typeDesc}\n\n`;
+        markdown += `## 📊 各维度分析\n\n`;
+        for (let s of sections) {
+            markdown += `### ${s.title}\n`;
+            markdown += `- **长处**：${s.good}\n`;
+            markdown += `- **可修**：${s.bad}\n\n`;
+        }
+        markdown += `## 📖 综合箴言\n\n${summary}\n\n`;
+        if (relatedItems.length > 0) {
+            markdown += `## 📜 相关命书条目（针对可修之处）\n\n`;
+            for (let item of relatedItems) {
+                markdown += `### ${item.title}\n`;
+                markdown += `> ${item.orig}\n\n`;
+                markdown += `📖 ${item.trans}\n\n`;
+                if (item.eval) markdown += `✍️ ${item.eval}\n\n`;
+            }
+        }
+        navigator.clipboard.writeText(markdown).then(() => {
+            alert('结果已复制为 Markdown 格式，可粘贴到任何支持 Markdown 的地方。');
+        }).catch(() => {
+            alert('复制失败，请手动截图。');
+        });
+    }
+
     function computeAndShowResult() {
         let aspectScores = new Map();
         for (let i=0; i<currentQuestions.length; i++) {
             const q = currentQuestions[i];
             const asp = q.aspect;
             let rawScore = currentAnswers[i];
-            // 反向计分：如果题目标记 reverse: true，则得分 = 6 - rawScore
             if (q.reverse === true) {
                 rawScore = 6 - rawScore;
             }
@@ -768,9 +849,10 @@
             html += `</div>`;
         }
 
-        html += `<div style="display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap;">
-                    <button id="backToModeBtn" class="secondary" style="flex:1;">🏠 返回模式选择</button>
-                    <button id="saveImageBtn" class="save-image-btn" style="flex:1;">📸 保存结果为图片</button>
+        html += `<div class="result-buttons">
+                    <button id="backToModeBtn" class="secondary">🏠 返回模式选择</button>
+                    <button id="copyResultBtn" class="secondary">📋 复制结果</button>
+                    <button id="saveImageBtn" class="save-image-btn">📸 保存结果为图片</button>
                 </div>`;
         resultArea.innerHTML = html;
         resultArea.classList.remove('hidden');
@@ -783,6 +865,7 @@
             bookView.classList.add('hidden');
         });
         document.getElementById('saveImageBtn')?.addEventListener('click', saveResultAsImage);
+        document.getElementById('copyResultBtn')?.addEventListener('click', copyResultAsMarkdown);
     }
 
     function startTest(mode) {
@@ -807,7 +890,7 @@
         renderCurrentPage();
     }
 
-    // ----------------------------- 命书阅读（两种模式 + 回到顶部 + 前言） -----------------------------
+    // ----------------------------- 命书阅读 -----------------------------
     let currentBookMode = 'sequential';
 
     function renderSequentialBooks() {
@@ -917,7 +1000,6 @@
     }
 
     function attachBackToTop() {
-        // 移除已存在的回到顶部按钮
         const existing = document.querySelector('.back-to-top');
         if (existing) existing.remove();
         const btn = document.createElement('div');
