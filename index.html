@@ -28,15 +28,16 @@
             padding: 1.5rem;
         }
 
+        /* 移动端优化 */
         @media (max-width: 600px) {
             .container { padding: 1rem; border-radius: 1.5rem; }
             h1 { font-size: 1.6rem; }
             .sub { font-size: 0.85rem; margin-left: 0.5rem; }
             .mode-card h3 { font-size: 0.95rem; }
             .mode-card p { font-size: 0.7rem; }
-            .opt { font-size: 0.7rem; padding: 0.3rem 0; }
-            .question-card { padding: 0.8rem; }
-            .q-text { font-size: 0.85rem; }
+            .opt { font-size: 0.75rem; padding: 0.5rem 0; }  /* 增大点击区域 */
+            .question-card { padding: 0.6rem; margin-bottom: 0.8rem; } /* 缩小行间距 */
+            .q-text { font-size: 0.85rem; margin-bottom: 0.5rem; }
             .page-info { font-size: 0.75rem; padding: 0.2rem 0.8rem; }
             .good-item, .bad-item { padding: 0.4rem 0.6rem; }
             .good-item strong, .bad-item strong { font-size: 0.8rem; }
@@ -47,6 +48,7 @@
             .type-badge { font-size: 0.9rem; }
             .book-mode-switch { flex-wrap: wrap; }
             .book-mode-switch button { flex: 1; margin: 0.2rem; }
+            .options { gap: 0.3rem; }
         }
 
         h1 {
@@ -90,6 +92,37 @@
             max-height: 70vh;
             overflow-y: auto;
             position: relative;
+        }
+        /* 回到顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #b87c4f;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 24px;
+            transition: 0.2s;
+        }
+        .back-to-top:hover {
+            background: #9a623d;
+        }
+        @media (max-width: 600px) {
+            .back-to-top {
+                width: 40px;
+                height: 40px;
+                bottom: 15px;
+                right: 15px;
+                font-size: 20px;
+            }
         }
         .book-sticky-header {
             position: sticky;
@@ -203,20 +236,20 @@
         .question-card {
             background: #fefaf5;
             border-radius: 1.5rem;
-            padding: 1rem 1.2rem;
-            margin-bottom: 1rem;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.8rem;
             border: 1px solid #ede3d6;
         }
         .q-text {
             font-weight: 500;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.6rem;
             font-size: 0.95rem;
-            line-height: 1.4;
+            line-height: 1.3;
         }
         .options {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.4rem;
             justify-content: space-between;
         }
         .opt {
@@ -225,7 +258,7 @@
             background: white;
             border: 1px solid #ddd2c4;
             border-radius: 2rem;
-            padding: 0.45rem 0;
+            padding: 0.4rem 0;
             font-size: 0.85rem;
             cursor: pointer;
             color: #5e5548;
@@ -243,7 +276,7 @@
             display: flex;
             gap: 1rem;
             justify-content: center;
-            margin: 1.5rem 0 0.5rem;
+            margin: 1rem 0 0.5rem;
         }
         button {
             background: #2c2b28;
@@ -304,11 +337,6 @@
         }
         .good-item strong { color: #2a7a3e; }
         .bad-item strong { color: #c25d3a; }
-        .small-note {
-            font-size: 0.75rem;
-            color: #6f6658;
-            margin-top: 0.3rem;
-        }
         .summary-box {
             background: #eae1d4;
             border-radius: 1rem;
@@ -359,6 +387,15 @@
             background: #b87c4f;
             margin-top: 1rem;
             width: 100%;
+        }
+        .book-intro {
+            background: #fff0e6;
+            padding: 0.8rem;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #6b5c4b;
+            border-left: 4px solid #b87c4f;
         }
     </style>
 </head>
@@ -437,6 +474,9 @@
         root: "守旧根基", selfknow: "自知之明", ease: "内心安宁", impulse: "克制冲动"
     };
 
+    // 自动翻页标记
+    let pageAutoNavigated = [];
+
     // 辅助函数
     function updateProgress() {
         const answered = currentAnswers.filter(v => v !== null).length;
@@ -492,6 +532,12 @@
                     opt.classList.add('selected');
                     updateProgress();
                     updateNavButtons();
+                    
+                    // 自动翻页：当前页完整且不是最后一页且该页尚未自动翻过
+                    if (isCurrentPageComplete() && currentPage < totalPages - 1 && !pageAutoNavigated[currentPage]) {
+                        pageAutoNavigated[currentPage] = true;
+                        goNextPage();
+                    }
                 });
             });
         });
@@ -536,12 +582,56 @@
         }
     }
 
-    function shuffleArray(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
+    // 按 group 去重抽取（每个 group 最多抽一题）
+    function selectQuestionsByGroup(totalCount, shuffleAll = false) {
+        // 按 group 分组
+        const groupMap = new Map();
+        for (let q of fullQuestionBank) {
+            const g = q.group;
+            if (!groupMap.has(g)) groupMap.set(g, []);
+            groupMap.get(g).push(q);
         }
-        return arr;
+        const groups = Array.from(groupMap.keys());
+        // 从每个 group 中随机抽取一题
+        let selected = [];
+        for (let g of groups) {
+            const groupQuestions = groupMap.get(g);
+            const randomIndex = Math.floor(Math.random() * groupQuestions.length);
+            selected.push(groupQuestions[randomIndex]);
+        }
+        if (shuffleAll) {
+            // 完整测试：返回全部组抽一题后的数组（已经是随机顺序，但可进一步打乱）
+            for (let i = selected.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [selected[i], selected[j]] = [selected[j], selected[i]];
+            }
+            return selected;
+        } else {
+            // 极速测试：如果 selected 长度 >= totalCount，直接取前 totalCount；否则需要补充
+            if (selected.length >= totalCount) {
+                // 随机取 totalCount 个
+                for (let i = selected.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [selected[i], selected[j]] = [selected[j], selected[i]];
+                }
+                return selected.slice(0, totalCount);
+            } else {
+                // 如果不足（理论上 group 有 158 题，远大于40），但为了安全，补抽剩余
+                let remaining = [...fullQuestionBank];
+                // 移除已选中的题目
+                for (let s of selected) {
+                    const idx = remaining.findIndex(r => r.id === s.id);
+                    if (idx !== -1) remaining.splice(idx, 1);
+                }
+                const need = totalCount - selected.length;
+                for (let i = remaining.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
+                }
+                selected.push(...remaining.slice(0, need));
+                return selected;
+            }
+        }
     }
 
     function getPersonalityType(aspectScoresMap) {
@@ -614,11 +704,16 @@
     function computeAndShowResult() {
         let aspectScores = new Map();
         for (let i=0; i<currentQuestions.length; i++) {
-            const asp = currentQuestions[i].aspect;
-            const score = currentAnswers[i];
+            const q = currentQuestions[i];
+            const asp = q.aspect;
+            let rawScore = currentAnswers[i];
+            // 反向计分：如果题目标记 reverse: true，则得分 = 6 - rawScore
+            if (q.reverse === true) {
+                rawScore = 6 - rawScore;
+            }
             if (!aspectScores.has(asp)) aspectScores.set(asp, { total:0, count:0 });
             let obj = aspectScores.get(asp);
-            obj.total += score;
+            obj.total += rawScore;
             obj.count++;
         }
         let allAspectAvg = [];
@@ -648,7 +743,6 @@
                             <div class="good-item"><strong>✓ 长处</strong><br>${aspectDisplayName[best.aspect] || best.aspect} (${best.avg.toFixed(1)}分)</div>
                             ${badHtml}
                         </div>
-                        <div class="small-note">该分类下其他维度处于中间状态，可参考命书精进。</div>
                     </div>`;
         }
 
@@ -697,13 +791,13 @@
             return;
         }
         if (mode === 'rapid') {
-            const shuffled = shuffleArray([...fullQuestionBank]);
-            currentQuestions = shuffled.slice(0, 40);
+            currentQuestions = selectQuestionsByGroup(40, false);
         } else {
-            currentQuestions = shuffleArray([...fullQuestionBank]);
+            currentQuestions = selectQuestionsByGroup(fullQuestionBank.length, true);
         }
         currentAnswers = new Array(currentQuestions.length).fill(null);
         totalPages = Math.ceil(currentQuestions.length / pageSize);
+        pageAutoNavigated = new Array(totalPages).fill(false);
         currentPage = 0;
         modeSelector.style.display = 'none';
         testView.classList.remove('hidden');
@@ -713,8 +807,8 @@
         renderCurrentPage();
     }
 
-    // ----------------------------- 命书阅读（两种模式：顺序 + 分类二级菜单） -----------------------------
-    let currentBookMode = 'sequential'; // 'sequential' 或 'categorical'
+    // ----------------------------- 命书阅读（两种模式 + 回到顶部 + 前言） -----------------------------
+    let currentBookMode = 'sequential';
 
     function renderSequentialBooks() {
         let html = `<div class="book-sticky-header">
@@ -723,6 +817,9 @@
                             <button id="modeCategoricalBtn">📂 分类阅读</button>
                         </div>
                         <button id="bookTopBackBtn" class="secondary" style="padding:0.3rem 1rem;">🏠 返回主菜单</button>
+                    </div>
+                    <div class="book-intro">
+                        📖 本内容为个人读书笔记整理，核心为处世修心之法，非玄学迷信，旨在提供自我觉察、落地践行的思路。
                     </div>`;
         for (let art of bookData) {
             let evalHtml = '';
@@ -742,18 +839,20 @@
         bookView.innerHTML = html;
         attachBookBackButtons();
         attachModeSwitchButtons();
+        attachBackToTop();
     }
 
     function renderCategoricalBooks() {
-        // 先显示分类列表（一级菜单）
         let html = `<div class="book-sticky-header">
                         <div class="book-mode-switch">
                             <button id="modeSequentialBtn">📜 顺序阅读</button>
                             <button id="modeCategoricalBtn" class="active-mode">📂 分类阅读</button>
                         </div>
                         <button id="bookTopBackBtn" class="secondary" style="padding:0.3rem 1rem;">🏠 返回主菜单</button>
+                    </div>
+                    <div class="book-intro">
+                        📖 本内容为个人读书笔记整理，核心为处世修心之法，非玄学迷信，旨在提供自我觉察、落地践行的思路。
                     </div>`;
-        // 按分类顺序显示可折叠分类
         const categoryOrder = ["环境与自律", "言语与社交", "心性与情绪", "处事与决策", "人际与边界", "根基与识己"];
         const grouped = {};
         for (let art of bookData) {
@@ -779,16 +878,14 @@
         bookView.innerHTML = html;
         attachBookBackButtons();
         attachModeSwitchButtons();
+        attachBackToTop();
 
-        // 为每个分类添加点击展开/折叠功能
         document.querySelectorAll('.book-category-header').forEach(header => {
             const categoryDiv = header.closest('.book-category');
             const contentDiv = categoryDiv.querySelector('.book-category-content');
             const catName = categoryDiv.dataset.category;
-            // 填充内容（仅第一次展开时填充）
             header.addEventListener('click', () => {
                 if (contentDiv.classList.contains('hidden')) {
-                    // 加载该分类下的命书
                     let contentHtml = '';
                     const arts = (() => {
                         for (let [cat, arr] of Object.entries(grouped)) {
@@ -819,6 +916,20 @@
         });
     }
 
+    function attachBackToTop() {
+        // 移除已存在的回到顶部按钮
+        const existing = document.querySelector('.back-to-top');
+        if (existing) existing.remove();
+        const btn = document.createElement('div');
+        btn.className = 'back-to-top';
+        btn.innerHTML = '↑';
+        btn.addEventListener('click', () => {
+            const bookViewDiv = document.getElementById('bookView');
+            if (bookViewDiv) bookViewDiv.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        document.body.appendChild(btn);
+    }
+
     function attachModeSwitchButtons() {
         const sequentialBtn = document.getElementById('modeSequentialBtn');
         const categoricalBtn = document.getElementById('modeCategoricalBtn');
@@ -846,6 +957,8 @@
             testView.classList.add('hidden');
             bookView.classList.add('hidden');
             resultArea.classList.add('hidden');
+            const existingTop = document.querySelector('.back-to-top');
+            if (existingTop) existingTop.remove();
         };
         if (topBtn) topBtn.addEventListener('click', backHandler);
         if (bottomBtn) bottomBtn.addEventListener('click', backHandler);
@@ -869,6 +982,8 @@
         testView.classList.add('hidden');
         bookView.classList.add('hidden');
         resultArea.classList.add('hidden');
+        const existingTop = document.querySelector('.back-to-top');
+        if (existingTop) existingTop.remove();
     }
 
     async function loadData() {
