@@ -41,7 +41,7 @@
             align-items: center;
             padding-bottom: 1rem;
             border-bottom: 1px solid #ede3d6;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             flex-wrap: wrap;
             gap: 0.5rem;
         }
@@ -60,6 +60,38 @@
             border-radius: 2rem;
         }
 
+        /* 模式切换 */
+        .mode-switch {
+            display: flex;
+            gap: 0.5rem;
+            width: 100%;
+            margin-bottom: 0.8rem;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 0.4rem 0;
+            border: 2px solid #ede3d6;
+            border-radius: 2rem;
+            background: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #8f7e6b;
+            cursor: pointer;
+            transition: 0.15s;
+            text-align: center;
+        }
+
+        .mode-btn.active {
+            border-color: #b87c4f;
+            background: #fff6ed;
+            color: #b87c4f;
+        }
+
+        .mode-btn:hover:not(.active) {
+            background: #f3ede5;
+        }
+
         /* 内容区 - 双栏布局 */
         .reader-content {
             flex: 1;
@@ -68,7 +100,6 @@
             padding: 0.5rem 0;
         }
 
-        /* 电脑端双栏 */
         .content-columns {
             display: flex;
             gap: 2rem;
@@ -89,7 +120,6 @@
             text-transform: uppercase;
         }
 
-        /* 分类标签 */
         .content-category {
             font-size: 0.8rem;
             color: #b87c4f;
@@ -109,13 +139,14 @@
             line-height: 1.2;
         }
 
+        /* 方案五：原文行楷+加粗，白话圆体 */
         .content-original {
-            font-family: 'Courier New', monospace;
-            font-size: 1.05rem;
+            font-family: '华文行楷', 'STXingkai', '方正行楷', 'KaiTi', cursive;
+            font-size: 1.1rem;
+            font-weight: bold;
             background: #f9f5ef;
             padding: 0.8rem 1rem;
             border-radius: 1rem;
-            margin-bottom: 0.8rem;
             line-height: 1.8;
             color: #2c2b28;
             border-left: 4px solid #b87c4f;
@@ -123,14 +154,15 @@
         }
 
         .content-trans {
+            font-family: 'PingFang SC', '微软雅黑', 'Helvetica Neue', sans-serif;
             font-size: 1rem;
             color: #4b3e2e;
             line-height: 1.8;
-            margin-bottom: 0.6rem;
             flex: 1;
         }
 
         .content-eval {
+            font-family: 'PingFang SC', '微软雅黑', 'Helvetica Neue', sans-serif;
             font-size: 0.9rem;
             color: #b1624b;
             background: #fff0e6;
@@ -146,29 +178,45 @@
             margin-top: 0.3rem;
         }
 
-        /* 底部信息 */
+        /* 底部导航 */
         .reader-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 1.8rem;
-            padding-top: 1.2rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
             border-top: 1px solid #ede3d6;
             flex-wrap: wrap;
             gap: 0.8rem;
         }
 
-        .footer-category {
+        .footer-nav {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .footer-nav a {
             font-size: 0.85rem;
             color: #8f7e6b;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.15s;
+            padding: 0.1rem 0.2rem;
+            border-bottom: 2px solid transparent;
         }
 
-        .footer-category span {
+        .footer-nav a:hover {
             color: #b87c4f;
-            font-weight: 600;
+            border-bottom-color: #b87c4f;
         }
 
-        /* 跳转下拉框 */
+        .footer-nav a.active-link {
+            color: #b87c4f;
+            border-bottom-color: #b87c4f;
+        }
+
         .jump-control {
             display: flex;
             align-items: center;
@@ -198,7 +246,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 1rem;
+            margin-top: 0.8rem;
             gap: 1rem;
         }
 
@@ -238,7 +286,6 @@
             color: #8f7e6b;
         }
 
-        /* 返回链接 */
         .back-link {
             display: block;
             text-align: center;
@@ -253,14 +300,13 @@
             color: #b87c4f;
         }
 
-        /* 加载状态 */
         .loading {
             text-align: center;
             padding: 3rem 0;
             color: #8f7e6b;
         }
 
-        /* 移动端适配 - 上下排列 */
+        /* 移动端适配 */
         @media (max-width: 700px) {
             .reader-container {
                 padding: 1.5rem 1.2rem;
@@ -277,7 +323,7 @@
             }
 
             .content-original {
-                font-size: 0.9rem;
+                font-size: 1rem;
                 padding: 0.6rem 0.8rem;
             }
 
@@ -312,8 +358,17 @@
                 gap: 0.5rem;
             }
 
+            .footer-nav {
+                justify-content: center;
+            }
+
             .jump-control {
                 justify-content: center;
+            }
+
+            .mode-btn {
+                font-size: 0.75rem;
+                padding: 0.3rem 0;
             }
         }
 
@@ -327,6 +382,10 @@
                 font-size: 1.1rem;
             }
 
+            .content-original {
+                font-size: 0.9rem;
+            }
+
             .nav-btn {
                 padding: 0.4rem 0.8rem;
                 font-size: 0.75rem;
@@ -336,6 +395,10 @@
             .jump-control select {
                 max-width: 120px;
                 font-size: 0.7rem;
+            }
+
+            .footer-nav a {
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -347,12 +410,18 @@
         <span class="reader-progress" id="progressDisplay">加载中...</span>
     </div>
 
+    <!-- 模式切换 -->
+    <div class="mode-switch" id="modeSwitch">
+        <button class="mode-btn active" data-mode="sequential">📜 顺序阅读</button>
+        <button class="mode-btn" data-mode="categorical">📂 分类阅读</button>
+    </div>
+
     <div class="reader-content" id="contentArea">
         <div class="loading">📚 加载中...</div>
     </div>
 
     <div class="reader-footer">
-        <div class="footer-category" id="footerCategory">📁 <span>—</span></div>
+        <div class="footer-nav" id="footerNav"></div>
         <div class="jump-control">
             <span>跳转：</span>
             <select id="jumpSelect"></select>
@@ -369,12 +438,21 @@
 </div>
 
 <script>
-    // ======================== 核心逻辑 ========================
+    // ======================== 全局 ========================
     let bookData = [];
+    let currentMode = 'sequential';   // 'sequential' | 'categorical'
+    let currentCategory = '全部';     // 分类模式下当前选中的分类
+    let filteredData = [];
     let currentPage = 0;
     let totalPages = 0;
 
-    // 需要过滤掉的条目（不在翻页中显示）
+    // 分类顺序（用于分类阅读模式）
+    const CATEGORY_ORDER = ['环境与自律', '言语与社交', '心性与情绪', '处事与决策', '人际与边界', '根基与识己'];
+
+    // 特殊分类（不显示在分类阅读中）
+    const SPECIAL_CATEGORIES = ['总纲', '结语', '其他'];
+
+    // 需要过滤掉的条目
     const EXCLUDED_TITLES = ['呜呼·过渡'];
 
     // DOM 元素
@@ -383,76 +461,62 @@
     const nextBtn = document.getElementById('nextBtn');
     const pageInfo = document.getElementById('pageInfo');
     const progressDisplay = document.getElementById('progressDisplay');
-    const footerCategory = document.getElementById('footerCategory');
+    const footerNav = document.getElementById('footerNav');
     const jumpSelect = document.getElementById('jumpSelect');
+    const modeSwitch = document.getElementById('modeSwitch');
 
-    // 从 book.json 加载数据
+    // ======================== 数据加载 ========================
     async function loadBook() {
         try {
             const res = await fetch('book.json');
             if (!res.ok) throw new Error('加载 book.json 失败');
             const data = await res.json();
-            // 过滤掉呜呼·过渡条目
             bookData = data.books.filter(art => !EXCLUDED_TITLES.includes(art.title));
-            totalPages = bookData.length;
-            if (totalPages === 0) {
+            if (bookData.length === 0) {
                 contentArea.innerHTML = '<div class="loading">⚠️ 暂无内容</div>';
                 return;
             }
-            // 填充跳转下拉框
-            populateJumpSelect();
-            currentPage = 0;
-            renderPage(currentPage);
-            updateButtons();
+            // 默认顺序模式
+            switchMode('sequential');
         } catch (err) {
             console.error(err);
             contentArea.innerHTML = '<div class="loading">⚠️ 数据加载失败，请刷新重试<br><small>确保 book.json 文件存在且格式正确</small></div>';
         }
     }
 
-    // 填充跳转下拉框
-    function populateJumpSelect() {
-        jumpSelect.innerHTML = '';
-        bookData.forEach((art, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            // 显示标题，特殊条目显示简化名
-            let displayTitle = art.title;
-            if (art.title === '纲领') displayTitle = '📜 纲领';
-            else if (art.title === '开篇') displayTitle = '📖 开篇';
-            else if (art.title === '尾页') displayTitle = '📌 尾页';
-            else if (art.title === '封底') displayTitle = '📌 封底';
-            else if (art.title.startsWith('感悟')) {
-                // 感悟一 → 感悟·一
-                const num = art.title.replace('感悟', '');
-                displayTitle = `💭 感悟·${num}`;
-            }
-            option.textContent = `${index + 1}. ${displayTitle}`;
-            jumpSelect.appendChild(option);
-        });
-        // 绑定跳转事件
-        jumpSelect.addEventListener('change', function() {
-            const target = parseInt(this.value);
-            if (target >= 0 && target < totalPages) {
-                currentPage = target;
-                renderPage(currentPage);
-                updateButtons();
-                // 滚动到顶部
-                document.querySelector('.reader-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
+    // ======================== 过滤数据（分类模式） ========================
+    function getFilteredData(mode, category) {
+        if (mode === 'sequential') {
+            return bookData;
+        } else {
+            // 分类模式：只显示非特殊分类的条目，且匹配当前分类
+            let filtered = bookData.filter(art => {
+                if (!art.category) return false;
+                if (SPECIAL_CATEGORIES.includes(art.category)) return false;
+                if (category === '全部') return true;
+                return art.category === category;
+            });
+            return filtered;
+        }
     }
 
-    // 渲染指定页
-    function renderPage(index) {
-        if (index < 0 || index >= totalPages) return;
-        const art = bookData[index];
+    // ======================== 渲染当前页 ========================
+    function renderPage() {
+        if (filteredData.length === 0) {
+            contentArea.innerHTML = '<div class="loading">📭 当前分类下没有内容</div>';
+            progressDisplay.innerText = `0 / 0`;
+            pageInfo.innerText = `0 / 0`;
+            return;
+        }
+
+        if (currentPage < 0) currentPage = 0;
+        if (currentPage >= filteredData.length) currentPage = filteredData.length - 1;
+
+        const art = filteredData[currentPage];
         if (!art) return;
 
-        // 判断是否为特殊条目（无术数编号）
         const isSpecial = ['纲领', '开篇', '尾页', '封底'].includes(art.title) || art.title.startsWith('感悟');
 
-        // 构建内容HTML
         let html = '';
 
         // 分类标签
@@ -460,10 +524,7 @@
             html += `<div class="content-category">📁 ${art.category}</div>`;
         }
 
-        // 标题
         html += `<div class="content-title">${art.title}</div>`;
-
-        // 双栏布局
         html += `<div class="content-columns">`;
 
         // 左栏：原文
@@ -484,7 +545,6 @@
         } else {
             html += `<div class="content-trans" style="color:#ccc; font-style:italic;">（无白话）</div>`;
         }
-        // 评价
         if (art.evaluation) {
             let evalText = art.evaluation;
             evalText = evalText.replace(/。\s*第十三术/g, '。<br>第十三术');
@@ -492,56 +552,178 @@
             html += `<div class="content-eval">✍️ ${evalText}</div>`;
         }
         html += `</div>`;
+        html += `</div>`;
 
-        html += `</div>`; // 结束 columns
-
-        // 特殊标签
         if (isSpecial) {
             html += `<div class="content-type-label">📌 特殊章节</div>`;
         }
 
         contentArea.innerHTML = html;
 
-        // 更新页码信息
-        const pageNum = index + 1;
-        progressDisplay.innerText = `${pageNum} / ${totalPages}`;
-        pageInfo.innerText = `${pageNum} / ${totalPages}`;
+        // 更新页码
+        const pageNum = currentPage + 1;
+        progressDisplay.innerText = `${pageNum} / ${filteredData.length}`;
+        pageInfo.innerText = `${pageNum} / ${filteredData.length}`;
 
-        // 更新底部分类
-        if (art.category) {
-            footerCategory.innerHTML = `📁 <span>${art.category}</span>`;
-        } else {
-            footerCategory.innerHTML = `📁 <span>—</span>`;
-        }
+        // 更新下拉框
+        populateJumpSelect();
 
-        // 同步下拉框
-        jumpSelect.value = index;
+        // 更新导航按钮
+        updateButtons();
+
+        // 更新底部导航高亮
+        updateFooterNav();
     }
 
-    // 更新按钮状态
+    // ======================== 底部导航 ========================
+    function renderFooterNav() {
+        let html = '';
+        if (currentMode === 'sequential') {
+            // 顺序模式：正文 · 感悟 · 尾页
+            const navItems = [
+                { label: '正文', target: '第一术' },
+                { label: '感悟', target: '感悟一' },
+                { label: '尾页', target: '尾页' }
+            ];
+            for (let item of navItems) {
+                const idx = filteredData.findIndex(art => art.title === item.target);
+                if (idx !== -1) {
+                    html += `<a data-index="${idx}" class="${currentPage === idx ? 'active-link' : ''}">${item.label}</a>`;
+                }
+            }
+        } else {
+            // 分类模式：六个分类 + "全部"
+            const cats = ['全部', ...CATEGORY_ORDER];
+            for (let cat of cats) {
+                const isActive = (cat === currentCategory);
+                html += `<a data-category="${cat}" class="${isActive ? 'active-link' : ''}">${cat === '全部' ? '📂 全部' : cat}</a>`;
+            }
+        }
+        footerNav.innerHTML = html;
+
+        // 绑定事件
+        footerNav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function() {
+                if (currentMode === 'sequential') {
+                    const idx = parseInt(this.dataset.index);
+                    if (!isNaN(idx) && idx >= 0 && idx < filteredData.length) {
+                        currentPage = idx;
+                        renderPage();
+                    }
+                } else {
+                    const cat = this.dataset.category;
+                    if (cat) {
+                        currentCategory = cat;
+                        filteredData = getFilteredData('categorical', currentCategory);
+                        currentPage = 0;
+                        renderPage();
+                        // 重新渲染底部导航以更新高亮
+                        renderFooterNav();
+                    }
+                }
+            });
+        });
+    }
+
+    function updateFooterNav() {
+        // 简单刷新底部导航高亮
+        const links = footerNav.querySelectorAll('a');
+        links.forEach(link => {
+            link.classList.remove('active-link');
+            if (currentMode === 'sequential') {
+                const idx = parseInt(link.dataset.index);
+                if (!isNaN(idx) && idx === currentPage) {
+                    link.classList.add('active-link');
+                }
+            } else {
+                const cat = link.dataset.category;
+                if (cat === currentCategory) {
+                    link.classList.add('active-link');
+                }
+            }
+        });
+    }
+
+    // ======================== 下拉框 ========================
+    function populateJumpSelect() {
+        jumpSelect.innerHTML = '';
+        filteredData.forEach((art, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            let displayTitle = art.title;
+            if (art.title === '纲领') displayTitle = '📜 纲领';
+            else if (art.title === '开篇') displayTitle = '📖 开篇';
+            else if (art.title === '尾页') displayTitle = '📌 尾页';
+            else if (art.title === '封底') displayTitle = '📌 封底';
+            else if (art.title.startsWith('感悟')) {
+                const num = art.title.replace('感悟', '');
+                displayTitle = `💭 感悟·${num}`;
+            }
+            option.textContent = `${index + 1}. ${displayTitle}`;
+            jumpSelect.appendChild(option);
+        });
+        if (filteredData.length > 0 && currentPage < filteredData.length) {
+            jumpSelect.value = currentPage;
+        }
+        // 绑定跳转事件
+        jumpSelect.onchange = function() {
+            const target = parseInt(this.value);
+            if (target >= 0 && target < filteredData.length) {
+                currentPage = target;
+                renderPage();
+                document.querySelector('.reader-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        };
+    }
+
+    // ======================== 翻页 ========================
     function updateButtons() {
         prevBtn.disabled = (currentPage === 0);
-        nextBtn.disabled = (currentPage === totalPages - 1);
+        nextBtn.disabled = (currentPage === filteredData.length - 1 || filteredData.length === 0);
     }
 
-    // 翻页
     function goPrev() {
         if (currentPage > 0) {
             currentPage--;
-            renderPage(currentPage);
-            updateButtons();
+            renderPage();
         }
     }
 
     function goNext() {
-        if (currentPage < totalPages - 1) {
+        if (currentPage < filteredData.length - 1) {
             currentPage++;
-            renderPage(currentPage);
-            updateButtons();
+            renderPage();
         }
     }
 
-    // 键盘支持
+    // ======================== 模式切换 ========================
+    function switchMode(mode) {
+        currentMode = mode;
+        // 更新按钮状态
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.mode === mode);
+        });
+
+        if (mode === 'sequential') {
+            filteredData = getFilteredData('sequential', null);
+            currentCategory = null;
+        } else {
+            // 分类模式默认"全部"
+            currentCategory = '全部';
+            filteredData = getFilteredData('categorical', currentCategory);
+        }
+
+        currentPage = 0;
+        renderPage();
+        renderFooterNav();
+        // 重新渲染底部导航（因为模式变了，导航项不同）
+        // renderFooterNav 已经在 renderPage 中调用 updateFooterNav，但需要重建
+        // 重新调用 renderFooterNav 会重建 DOM，所以先清除再重建
+        footerNav.innerHTML = '';
+        renderFooterNav();
+    }
+
+    // ======================== 键盘和触摸支持 ========================
     document.addEventListener('keydown', function(e) {
         if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
             e.preventDefault();
@@ -552,7 +734,6 @@
         }
     });
 
-    // 触摸翻页支持（在移动端左右滑动）
     let touchStartX = 0;
     let touchStartY = 0;
     document.addEventListener('touchstart', function(e) {
@@ -562,18 +743,24 @@
     document.addEventListener('touchend', function(e) {
         const dx = e.changedTouches[0].screenX - touchStartX;
         const dy = e.changedTouches[0].screenY - touchStartY;
-        // 水平滑动大于垂直滑动，且滑动距离足够
         if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
             if (dx < 0) goNext();
             else goPrev();
         }
     });
 
-    // 绑定按钮事件
+    // ======================== 绑定事件 ========================
     prevBtn.addEventListener('click', goPrev);
     nextBtn.addEventListener('click', goNext);
 
-    // 加载数据
+    modeSwitch.addEventListener('click', function(e) {
+        const btn = e.target.closest('.mode-btn');
+        if (btn && btn.dataset.mode !== currentMode) {
+            switchMode(btn.dataset.mode);
+        }
+    });
+
+    // ======================== 启动 ========================
     loadBook();
 </script>
 </body>
