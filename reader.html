@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>易命术 · 翻页阅读</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0ede7;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .reader-container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.08);
+            padding: 2rem 2.5rem;
+            position: relative;
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部栏 */
+        .reader-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #ede3d6;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .reader-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #b87c4f;
+        }
+
+        .reader-progress {
+            font-size: 0.85rem;
+            color: #8f7e6b;
+            background: #f3ede5;
+            padding: 0.2rem 1rem;
+            border-radius: 2rem;
+        }
+
+        /* 内容区 - 双栏布局 */
+        .reader-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem 0;
+        }
+
+        /* 电脑端双栏 */
+        .content-columns {
+            display: flex;
+            gap: 2rem;
+            flex: 1;
+        }
+
+        .content-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .column-label {
+            font-size: 0.7rem;
+            color: #aa9f90;
+            letter-spacing: 2px;
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+        }
+
+        /* 分类标签 */
+        .content-category {
+            font-size: 0.8rem;
+            color: #b87c4f;
+            background: #fff0e6;
+            display: inline-block;
+            padding: 0.15rem 0.8rem;
+            border-radius: 2rem;
+            margin-bottom: 0.8rem;
+            align-self: flex-start;
+        }
+
+        .content-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #b87c4f;
+            margin-bottom: 0.6rem;
+            line-height: 1.2;
+        }
+
+        .content-original {
+            font-family: 'Courier New', monospace;
+            font-size: 1.05rem;
+            background: #f9f5ef;
+            padding: 0.8rem 1rem;
+            border-radius: 1rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.8;
+            color: #2c2b28;
+            border-left: 4px solid #b87c4f;
+            flex: 1;
+        }
+
+        .content-trans {
+            font-size: 1rem;
+            color: #4b3e2e;
+            line-height: 1.8;
+            margin-bottom: 0.6rem;
+            flex: 1;
+        }
+
+        .content-eval {
+            font-size: 0.9rem;
+            color: #b1624b;
+            background: #fff0e6;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.8rem;
+            margin-top: 0.4rem;
+            white-space: pre-line;
+        }
+
+        .content-type-label {
+            font-size: 0.7rem;
+            color: #aa9f90;
+            margin-top: 0.3rem;
+        }
+
+        /* 底部信息 */
+        .reader-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.8rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid #ede3d6;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .footer-category {
+            font-size: 0.85rem;
+            color: #8f7e6b;
+        }
+
+        .footer-category span {
+            color: #b87c4f;
+            font-weight: 600;
+        }
+
+        /* 跳转下拉框 */
+        .jump-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #8f7e6b;
+        }
+
+        .jump-control select {
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            border: 1px solid #ddd2c4;
+            background: white;
+            font-size: 0.85rem;
+            color: #2c2b28;
+            cursor: pointer;
+            max-width: 220px;
+        }
+
+        .jump-control select:focus {
+            outline: none;
+            border-color: #b87c4f;
+        }
+
+        /* 翻页按钮 */
+        .reader-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background: #e2d9cf;
+            color: #2c2b28;
+            border: none;
+            padding: 0.6rem 1.8rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.2s;
+            min-width: 100px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #d1c5b6;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .nav-btn-primary {
+            background: #b87c4f;
+            color: white;
+        }
+
+        .nav-btn-primary:hover:not(:disabled) {
+            background: #9a623d;
+        }
+
+        .nav-center {
+            font-size: 0.85rem;
+            color: #8f7e6b;
+        }
+
+        /* 返回链接 */
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            color: #8f7e6b;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .back-link:hover {
+            color: #b87c4f;
+        }
+
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 3rem 0;
+            color: #8f7e6b;
+        }
+
+        /* 移动端适配 - 上下排列 */
+        @media (max-width: 700px) {
+            .reader-container {
+                padding: 1.5rem 1.2rem;
+                min-height: 80vh;
+            }
+
+            .content-columns {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .content-title {
+                font-size: 1.3rem;
+            }
+
+            .content-original {
+                font-size: 0.9rem;
+                padding: 0.6rem 0.8rem;
+            }
+
+            .content-trans {
+                font-size: 0.9rem;
+            }
+
+            .column-label {
+                display: none;
+            }
+
+            .nav-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+                min-width: 70px;
+            }
+
+            .reader-nav {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                justify-content: center;
+            }
+
+            .jump-control select {
+                max-width: 160px;
+                font-size: 0.75rem;
+            }
+
+            .reader-footer {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+
+            .jump-control {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .reader-container {
+                padding: 1rem 0.8rem;
+                border-radius: 1.2rem;
+            }
+
+            .content-title {
+                font-size: 1.1rem;
+            }
+
+            .nav-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+                min-width: 60px;
+            }
+
+            .jump-control select {
+                max-width: 120px;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="reader-container" id="app">
+    <div class="reader-header">
+        <span class="reader-title">📖 易命术 · 翻页阅读</span>
+        <span class="reader-progress" id="progressDisplay">加载中...</span>
+    </div>
+
+    <div class="reader-content" id="contentArea">
+        <div class="loading">📚 加载中...</div>
+    </div>
+
+    <div class="reader-footer">
+        <div class="footer-category" id="footerCategory">📁 <span>—</span></div>
+        <div class="jump-control">
+            <span>跳转：</span>
+            <select id="jumpSelect"></select>
+        </div>
+    </div>
+
+    <div class="reader-nav">
+        <button class="nav-btn" id="prevBtn" disabled>◀ 上一页</button>
+        <span class="nav-center" id="pageInfo">—</span>
+        <button class="nav-btn nav-btn-primary" id="nextBtn">下一页 ▶</button>
+    </div>
+
+    <a href="index.html" class="back-link">🏠 返回主菜单</a>
+</div>
+
+<script>
+    // ======================== 核心逻辑 ========================
+    let bookData = [];
+    let currentPage = 0;
+    let totalPages = 0;
+
+    // 需要过滤掉的条目（不在翻页中显示）
+    const EXCLUDED_TITLES = ['呜呼·过渡'];
+
+    // DOM 元素
+    const contentArea = document.getElementById('contentArea');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const pageInfo = document.getElementById('pageInfo');
+    const progressDisplay = document.getElementById('progressDisplay');
+    const footerCategory = document.getElementById('footerCategory');
+    const jumpSelect = document.getElementById('jumpSelect');
+
+    // 从 book.json 加载数据
+    async function loadBook() {
+        try {
+            const res = await fetch('book.json');
+            if (!res.ok) throw new Error('加载 book.json 失败');
+            const data = await res.json();
+            // 过滤掉呜呼·过渡条目
+            bookData = data.books.filter(art => !EXCLUDED_TITLES.includes(art.title));
+            totalPages = bookData.length;
+            if (totalPages === 0) {
+                contentArea.innerHTML = '<div class="loading">⚠️ 暂无内容</div>';
+                return;
+            }
+            // 填充跳转下拉框
+            populateJumpSelect();
+            currentPage = 0;
+            renderPage(currentPage);
+            updateButtons();
+        } catch (err) {
+            console.error(err);
+            contentArea.innerHTML = '<div class="loading">⚠️ 数据加载失败，请刷新重试<br><small>确保 book.json 文件存在且格式正确</small></div>';
+        }
+    }
+
+    // 填充跳转下拉框
+    function populateJumpSelect() {
+        jumpSelect.innerHTML = '';
+        bookData.forEach((art, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            // 显示标题，特殊条目显示简化名
+            let displayTitle = art.title;
+            if (art.title === '纲领') displayTitle = '📜 纲领';
+            else if (art.title === '开篇') displayTitle = '📖 开篇';
+            else if (art.title === '尾页') displayTitle = '📌 尾页';
+            else if (art.title === '封底') displayTitle = '📌 封底';
+            else if (art.title.startsWith('感悟')) {
+                // 感悟一 → 感悟·一
+                const num = art.title.replace('感悟', '');
+                displayTitle = `💭 感悟·${num}`;
+            }
+            option.textContent = `${index + 1}. ${displayTitle}`;
+            jumpSelect.appendChild(option);
+        });
+        // 绑定跳转事件
+        jumpSelect.addEventListener('change', function() {
+            const target = parseInt(this.value);
+            if (target >= 0 && target < totalPages) {
+                currentPage = target;
+                renderPage(currentPage);
+                updateButtons();
+                // 滚动到顶部
+                document.querySelector('.reader-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
+
+    // 渲染指定页
+    function renderPage(index) {
+        if (index < 0 || index >= totalPages) return;
+        const art = bookData[index];
+        if (!art) return;
+
+        // 判断是否为特殊条目（无术数编号）
+        const isSpecial = ['纲领', '开篇', '尾页', '封底'].includes(art.title) || art.title.startsWith('感悟');
+
+        // 构建内容HTML
+        let html = '';
+
+        // 分类标签
+        if (art.category) {
+            html += `<div class="content-category">📁 ${art.category}</div>`;
+        }
+
+        // 标题
+        html += `<div class="content-title">${art.title}</div>`;
+
+        // 双栏布局
+        html += `<div class="content-columns">`;
+
+        // 左栏：原文
+        html += `<div class="content-column">`;
+        html += `<div class="column-label">原 文</div>`;
+        if (art.original) {
+            html += `<div class="content-original">${art.original}</div>`;
+        } else {
+            html += `<div class="content-original" style="color:#ccc; font-style:italic;">（无原文）</div>`;
+        }
+        html += `</div>`;
+
+        // 右栏：白话 + 评价
+        html += `<div class="content-column">`;
+        html += `<div class="column-label">白 话</div>`;
+        if (art.translation) {
+            html += `<div class="content-trans">📖 ${art.translation}</div>`;
+        } else {
+            html += `<div class="content-trans" style="color:#ccc; font-style:italic;">（无白话）</div>`;
+        }
+        // 评价
+        if (art.evaluation) {
+            let evalText = art.evaluation;
+            evalText = evalText.replace(/。\s*第十三术/g, '。<br>第十三术');
+            evalText = evalText.replace(/。\s*第二十九术/g, '。<br>第二十九术');
+            html += `<div class="content-eval">✍️ ${evalText}</div>`;
+        }
+        html += `</div>`;
+
+        html += `</div>`; // 结束 columns
+
+        // 特殊标签
+        if (isSpecial) {
+            html += `<div class="content-type-label">📌 特殊章节</div>`;
+        }
+
+        contentArea.innerHTML = html;
+
+        // 更新页码信息
+        const pageNum = index + 1;
+        progressDisplay.innerText = `${pageNum} / ${totalPages}`;
+        pageInfo.innerText = `${pageNum} / ${totalPages}`;
+
+        // 更新底部分类
+        if (art.category) {
+            footerCategory.innerHTML = `📁 <span>${art.category}</span>`;
+        } else {
+            footerCategory.innerHTML = `📁 <span>—</span>`;
+        }
+
+        // 同步下拉框
+        jumpSelect.value = index;
+    }
+
+    // 更新按钮状态
+    function updateButtons() {
+        prevBtn.disabled = (currentPage === 0);
+        nextBtn.disabled = (currentPage === totalPages - 1);
+    }
+
+    // 翻页
+    function goPrev() {
+        if (currentPage > 0) {
+            currentPage--;
+            renderPage(currentPage);
+            updateButtons();
+        }
+    }
+
+    function goNext() {
+        if (currentPage < totalPages - 1) {
+            currentPage++;
+            renderPage(currentPage);
+            updateButtons();
+        }
+    }
+
+    // 键盘支持
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            goPrev();
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+            e.preventDefault();
+            goNext();
+        }
+    });
+
+    // 触摸翻页支持（在移动端左右滑动）
+    let touchStartX = 0;
+    let touchStartY = 0;
+    document.addEventListener('touchstart', function(e) {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    });
+    document.addEventListener('touchend', function(e) {
+        const dx = e.changedTouches[0].screenX - touchStartX;
+        const dy = e.changedTouches[0].screenY - touchStartY;
+        // 水平滑动大于垂直滑动，且滑动距离足够
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+            if (dx < 0) goNext();
+            else goPrev();
+        }
+    });
+
+    // 绑定按钮事件
+    prevBtn.addEventListener('click', goPrev);
+    nextBtn.addEventListener('click', goNext);
+
+    // 加载数据
+    loadBook();
+</script>
+</body>
+</html>

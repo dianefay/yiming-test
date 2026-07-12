@@ -28,7 +28,6 @@
             padding: 1.5rem;
         }
 
-        /* 移动端优化 */
         @media (max-width: 600px) {
             .container { padding: 1rem; border-radius: 1.5rem; }
             h1 { font-size: 1.6rem; }
@@ -45,8 +44,6 @@
             .summary-box { font-size: 0.85rem; }
             button { padding: 0.5rem 1rem; font-size: 0.8rem; }
             .type-badge { font-size: 0.9rem; }
-            .book-mode-switch { flex-wrap: wrap; }
-            .book-mode-switch button { flex: 1; margin: 0.2rem; }
             .options { gap: 0.3rem; }
         }
 
@@ -61,7 +58,6 @@
             font-size: 0.9rem;
         }
 
-        /* 模式选择改为上下排列 */
         .mode-selector {
             display: flex;
             flex-direction: column;
@@ -77,6 +73,9 @@
             text-align: center;
             cursor: pointer;
             transition: 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
         .mode-card.active {
             border-color: #b87c4f;
@@ -86,131 +85,6 @@
         .mode-card h3 { font-size: 1.2rem; margin-bottom: 0.3rem; }
         .mode-card p { font-size: 0.8rem; color: #6b5c4b; }
 
-        .book-view {
-            background: #fefaf5;
-            border-radius: 1.5rem;
-            padding: 0 1.2rem 1.2rem 1.2rem;
-            max-height: 70vh;
-            overflow-y: auto;
-            position: relative;
-        }
-        /* 返回顶部按钮位置调整 */
-        .back-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: calc(50% - 430px + 20px);
-            background: #b87c4f;
-            color: white;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            z-index: 1000;
-            font-size: 24px;
-            transition: 0.2s;
-        }
-        .back-to-top:hover {
-            background: #9a623d;
-        }
-        @media (max-width: 860px) {
-            .back-to-top {
-                right: 20px;
-            }
-        }
-        @media (max-width: 600px) {
-            .back-to-top {
-                width: 40px;
-                height: 40px;
-                bottom: 15px;
-                right: 15px;
-                font-size: 20px;
-            }
-        }
-        .book-sticky-header {
-            position: sticky;
-            top: 0;
-            background: #fefaf5;
-            padding: 0.8rem 0;
-            z-index: 10;
-            border-bottom: 1px solid #e9e0d4;
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        .book-mode-switch {
-            display: flex;
-            gap: 0.5rem;
-        }
-        .book-mode-switch button {
-            background: #e2d9cf;
-            color: #2c2b28;
-            padding: 0.3rem 1rem;
-            font-size: 0.85rem;
-        }
-        .book-mode-switch button.active-mode {
-            background: #b87c4f;
-            color: white;
-        }
-        .book-category {
-            margin-bottom: 1rem;
-        }
-        .book-category-header {
-            background: #f3ede5;
-            border-radius: 1rem;
-            padding: 0.5rem 1rem;
-            margin: 0.5rem 0;
-            cursor: pointer;
-            font-weight: 600;
-            color: #b87c4f;
-            transition: 0.1s;
-        }
-        .book-category-header:hover {
-            background: #e9e0d4;
-        }
-        .book-category-content {
-            margin-left: 0.5rem;
-            border-left: 2px solid #e0d4c6;
-            padding-left: 1rem;
-        }
-        .art-item {
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #e9e0d4;
-            padding-bottom: 1rem;
-        }
-        .art-title {
-            font-weight: 700;
-            color: #b87c4f;
-            margin-bottom: 0.2rem;
-        }
-        .art-original {
-            font-family: monospace;
-            background: #f3ede5;
-            padding: 0.2rem 0.5rem;
-            border-radius: 12px;
-            display: inline-block;
-            font-size: 0.8rem;
-            margin: 0.3rem 0;
-        }
-        .art-trans {
-            font-size: 0.85rem;
-            color: #4b3e2e;
-        }
-        .art-eval {
-            font-size: 0.85rem;
-            color: #b1624b;
-            margin-top: 0.3rem;
-            background: #fff0e6;
-            padding: 0.2rem 0.5rem;
-            border-radius: 12px;
-            display: inline-block;
-            white-space: pre-line;
-        }
         .test-header {
             display: flex;
             justify-content: space-between;
@@ -394,16 +268,6 @@
             margin-top: 1rem;
             width: 100%;
         }
-        .book-intro {
-            background: #fff0e6;
-            padding: 0.8rem;
-            border-radius: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            color: #6b5c4b;
-            border-left: 4px solid #b87c4f;
-        }
-        /* 结果页按钮等宽 */
         .result-buttons {
             display: flex;
             gap: 0.8rem;
@@ -430,13 +294,11 @@
             <h3>📚 完整测试</h3>
             <p>全量题库 · 深度自省</p>
         </div>
-        <div class="mode-card" data-mode="book">
+        <a href="reader.html" class="mode-card" data-mode="book">
             <h3>📖 命书阅读</h3>
-            <p>原文+白话+评价</p>
-        </div>
+            <p>翻页阅读 · 原文+白话+评价</p>
+        </a>
     </div>
-
-    <div id="bookView" class="book-view hidden"></div>
 
     <div id="testView" class="hidden">
         <div class="test-header">
@@ -470,7 +332,6 @@
 
     // DOM 元素
     const modeSelector = document.getElementById('modeSelector');
-    const bookView = document.getElementById('bookView');
     const testView = document.getElementById('testView');
     const questionsPageDiv = document.getElementById('questionsPage');
     const prevBtn = document.getElementById('prevPageBtn');
@@ -607,7 +468,7 @@
         }
     }
 
-    // 按 group 去重抽取（每个 group 最多抽一题）
+    // 按 group 去重抽取
     function selectQuestionsByGroup(totalCount, shuffleAll = false) {
         const groupMap = new Map();
         for (let q of fullQuestionBank) {
@@ -720,14 +581,11 @@
     }
 
     function copyResultAsMarkdown() {
-        // 从当前结果页 DOM 中提取内容并转为 Markdown
         const resultDiv = document.getElementById('resultArea');
         if (!resultDiv) return;
-        // 获取命术类型
         const typeBadge = resultDiv.querySelector('.type-badge');
         const typeName = typeBadge ? typeBadge.innerText.replace('🏷️ 你的命术类型：', '') : '未知';
         const typeDesc = resultDiv.querySelector('.type-badge + p')?.innerText || '';
-        // 获取各分类的长处和可修
         let sections = [];
         const categorySections = resultDiv.querySelectorAll('.category-section');
         categorySections.forEach(section => {
@@ -741,9 +599,7 @@
             }
             sections.push({ title, good, bad });
         });
-        // 获取综合箴言
         const summary = resultDiv.querySelector('.summary-box')?.innerText.replace('📖 综合箴言', '').trim() || '';
-        // 获取相关命书条目
         let relatedItems = [];
         const relatedDiv = resultDiv.querySelector('.related-arts');
         if (relatedDiv) {
@@ -862,7 +718,6 @@
             resultArea.classList.add('hidden');
             modeSelector.style.display = 'flex';
             testView.classList.add('hidden');
-            bookView.classList.add('hidden');
         });
         document.getElementById('saveImageBtn')?.addEventListener('click', saveResultAsImage);
         document.getElementById('copyResultBtn')?.addEventListener('click', copyResultAsMarkdown);
@@ -884,188 +739,15 @@
         currentPage = 0;
         modeSelector.style.display = 'none';
         testView.classList.remove('hidden');
-        bookView.classList.add('hidden');
         resultArea.classList.add('hidden');
         totalNeededSpan.innerText = currentQuestions.length;
         renderCurrentPage();
     }
 
-    // ----------------------------- 命书阅读 -----------------------------
-    let currentBookMode = 'sequential';
-
-    function renderSequentialBooks() {
-        let html = `<div class="book-sticky-header">
-                        <div class="book-mode-switch">
-                            <button id="modeSequentialBtn" class="active-mode">📜 顺序阅读</button>
-                            <button id="modeCategoricalBtn">📂 分类阅读</button>
-                        </div>
-                        <button id="bookTopBackBtn" class="secondary" style="padding:0.3rem 1rem;">🏠 返回主菜单</button>
-                    </div>
-                    <div class="book-intro">
-                        📖 本内容为个人读书笔记整理，核心为处世修心之法，非玄学迷信，旨在提供自我觉察、落地践行的思路。
-                    </div>`;
-        for (let art of bookData) {
-            let evalHtml = '';
-            if (art.evaluation) {
-                let formatted = art.evaluation.replace(/。\s*第十三术/g, '。<br>第十三术');
-                formatted = formatted.replace(/。\s*第二十九术/g, '。<br>第二十九术');
-                evalHtml = `<div class="art-eval">✍️ ${formatted}</div>`;
-            }
-            html += `<div class="art-item">
-                        <div class="art-title">${art.title}</div>
-                        <div class="art-original">${art.original}</div>
-                        <div class="art-trans">📖 ${art.translation}</div>
-                        ${evalHtml}
-                    </div>`;
-        }
-        html += `<div style="text-align:center; margin-top:1.5rem;"><button id="bookBottomBackBtn" class="secondary">🏠 返回主菜单</button></div>`;
-        bookView.innerHTML = html;
-        attachBookBackButtons();
-        attachModeSwitchButtons();
-        attachBackToTop();
-    }
-
-    function renderCategoricalBooks() {
-        let html = `<div class="book-sticky-header">
-                        <div class="book-mode-switch">
-                            <button id="modeSequentialBtn">📜 顺序阅读</button>
-                            <button id="modeCategoricalBtn" class="active-mode">📂 分类阅读</button>
-                        </div>
-                        <button id="bookTopBackBtn" class="secondary" style="padding:0.3rem 1rem;">🏠 返回主菜单</button>
-                    </div>
-                    <div class="book-intro">
-                        📖 本内容为个人读书笔记整理，核心为处世修心之法，非玄学迷信，旨在提供自我觉察、落地践行的思路。
-                    </div>`;
-        const categoryOrder = ["环境与自律", "言语与社交", "心性与情绪", "处事与决策", "人际与边界", "根基与识己"];
-        const grouped = {};
-        for (let art of bookData) {
-            const cat = art.category || "其他";
-            if (!grouped[cat]) grouped[cat] = [];
-            grouped[cat].push(art);
-        }
-        for (let cat of categoryOrder) {
-            if (grouped[cat] && grouped[cat].length) {
-                html += `<div class="book-category" data-category="${cat}">
-                            <div class="book-category-header">📁 ${cat}</div>
-                            <div class="book-category-content hidden"></div>
-                        </div>`;
-            }
-        }
-        if (grouped["其他"] && grouped["其他"].length) {
-            html += `<div class="book-category" data-category="其他">
-                        <div class="book-category-header">📁 其他</div>
-                        <div class="book-category-content hidden"></div>
-                    </div>`;
-        }
-        html += `<div style="text-align:center; margin-top:1.5rem;"><button id="bookBottomBackBtn" class="secondary">🏠 返回主菜单</button></div>`;
-        bookView.innerHTML = html;
-        attachBookBackButtons();
-        attachModeSwitchButtons();
-        attachBackToTop();
-
-        document.querySelectorAll('.book-category-header').forEach(header => {
-            const categoryDiv = header.closest('.book-category');
-            const contentDiv = categoryDiv.querySelector('.book-category-content');
-            const catName = categoryDiv.dataset.category;
-            header.addEventListener('click', () => {
-                if (contentDiv.classList.contains('hidden')) {
-                    let contentHtml = '';
-                    const arts = (() => {
-                        for (let [cat, arr] of Object.entries(grouped)) {
-                            if (cat === catName) return arr;
-                        }
-                        return [];
-                    })();
-                    for (let art of arts) {
-                        let evalHtml = '';
-                        if (art.evaluation) {
-                            let formatted = art.evaluation.replace(/。\s*第十三术/g, '。<br>第十三术');
-                            formatted = formatted.replace(/。\s*第二十九术/g, '。<br>第二十九术');
-                            evalHtml = `<div class="art-eval">✍️ ${formatted}</div>`;
-                        }
-                        contentHtml += `<div class="art-item">
-                                            <div class="art-title">${art.title}</div>
-                                            <div class="art-original">${art.original}</div>
-                                            <div class="art-trans">📖 ${art.translation}</div>
-                                            ${evalHtml}
-                                        </div>`;
-                    }
-                    contentDiv.innerHTML = contentHtml;
-                    contentDiv.classList.remove('hidden');
-                } else {
-                    contentDiv.classList.add('hidden');
-                }
-            });
-        });
-    }
-
-    function attachBackToTop() {
-        const existing = document.querySelector('.back-to-top');
-        if (existing) existing.remove();
-        const btn = document.createElement('div');
-        btn.className = 'back-to-top';
-        btn.innerHTML = '↑';
-        btn.addEventListener('click', () => {
-            const bookViewDiv = document.getElementById('bookView');
-            if (bookViewDiv) bookViewDiv.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        document.body.appendChild(btn);
-    }
-
-    function attachModeSwitchButtons() {
-        const sequentialBtn = document.getElementById('modeSequentialBtn');
-        const categoricalBtn = document.getElementById('modeCategoricalBtn');
-        if (sequentialBtn) {
-            sequentialBtn.addEventListener('click', () => {
-                if (currentBookMode === 'sequential') return;
-                currentBookMode = 'sequential';
-                renderSequentialBooks();
-            });
-        }
-        if (categoricalBtn) {
-            categoricalBtn.addEventListener('click', () => {
-                if (currentBookMode === 'categorical') return;
-                currentBookMode = 'categorical';
-                renderCategoricalBooks();
-            });
-        }
-    }
-
-    function attachBookBackButtons() {
-        const topBtn = document.getElementById('bookTopBackBtn');
-        const bottomBtn = document.getElementById('bookBottomBackBtn');
-        const backHandler = () => {
-            modeSelector.style.display = 'flex';
-            testView.classList.add('hidden');
-            bookView.classList.add('hidden');
-            resultArea.classList.add('hidden');
-            const existingTop = document.querySelector('.back-to-top');
-            if (existingTop) existingTop.remove();
-        };
-        if (topBtn) topBtn.addEventListener('click', backHandler);
-        if (bottomBtn) bottomBtn.addEventListener('click', backHandler);
-    }
-
-    function showBookView() {
-        if (!bookData.length) {
-            alert('命书数据加载失败');
-            return;
-        }
-        modeSelector.style.display = 'none';
-        testView.classList.add('hidden');
-        bookView.classList.remove('hidden');
-        resultArea.classList.add('hidden');
-        currentBookMode = 'sequential';
-        renderSequentialBooks();
-    }
-
     function resetToModeSelect() {
         modeSelector.style.display = 'flex';
         testView.classList.add('hidden');
-        bookView.classList.add('hidden');
         resultArea.classList.add('hidden');
-        const existingTop = document.querySelector('.back-to-top');
-        if (existingTop) existingTop.remove();
     }
 
     async function loadData() {
@@ -1082,12 +764,12 @@
     }
 
     function bindEvents() {
-        document.querySelectorAll('.mode-card').forEach(card => {
+        // 只给 rapid 和 full 绑定点击事件，book 已经是链接了
+        document.querySelectorAll('.mode-card[data-mode]').forEach(card => {
             card.addEventListener('click', () => {
                 const mode = card.dataset.mode;
                 if (mode === 'rapid') startTest('rapid');
                 else if (mode === 'full') startTest('full');
-                else if (mode === 'book') showBookView();
                 document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
                 card.classList.add('active');
             });
