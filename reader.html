@@ -576,55 +576,54 @@
     }
 
     // ======================== 底部导航 ========================
-    function renderFooterNav() {
-        let html = '';
-        if (currentMode === 'sequential') {
-            // 顺序模式：纲领 · 正文 · 感悟 · 尾页
-const navItems = [
-    { label: '纲领', target: '纲领' },
-    { label: '正文', target: '第一术' },
-    { label: '感悟', target: '感悟一' },
-    { label: '尾页', target: '尾页' }
-];
-            for (let item of navItems) {
-                const idx = filteredData.findIndex(art => art.title === item.target);
-                if (idx !== -1) {
-                    html += `<a data-index="${idx}" class="${currentPage === idx ? 'active-link' : ''}">${item.label}</a>`;
-                }
-            }
-        } else {
-            // 分类模式：六个分类 + "全部"
-            const cats = ['全部', ...CATEGORY_ORDER];
-            for (let cat of cats) {
-                const isActive = (cat === currentCategory);
-                html += `<a data-category="${cat}" class="${isActive ? 'active-link' : ''}">${cat === '全部' ? '📂 全部' : cat}</a>`;
+function renderFooterNav() {
+    let html = '';
+    if (currentMode === 'sequential') {
+        // 顺序模式：纲领 · 正文 · 感悟 · 尾页
+        const navItems = [
+            { label: '纲领', target: '纲领' },
+            { label: '正文', target: '第一术' },
+            { label: '感悟', target: '感悟一' },
+            { label: '尾页', target: '尾页' }
+        ];
+        for (let item of navItems) {
+            const idx = filteredData.findIndex(art => art.title === item.target);
+            if (idx !== -1) {
+                html += `<a data-index="${idx}" class="${currentPage === idx ? 'active-link' : ''}">${item.label}</a>`;
             }
         }
-        footerNav.innerHTML = html;
-
-        // 绑定事件
-        footerNav.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', function() {
-                if (currentMode === 'sequential') {
-                    const idx = parseInt(this.dataset.index);
-                    if (!isNaN(idx) && idx >= 0 && idx < filteredData.length) {
-                        currentPage = idx;
-                        renderPage();
-                    }
-                } else {
-                    const cat = this.dataset.category;
-                    if (cat) {
-                        currentCategory = cat;
-                        filteredData = getFilteredData('categorical', currentCategory);
-                        currentPage = 0;
-                        renderPage();
-                        // 重新渲染底部导航以更新高亮
-                        renderFooterNav();
-                    }
-                }
-            });
-        });
+    } else {
+        // 分类模式：全部 + 六个分类
+        const cats = ['全部', ...CATEGORY_ORDER];
+        for (let cat of cats) {
+            const isActive = (cat === currentCategory);
+            html += `<a data-category="${cat}" class="${isActive ? 'active-link' : ''}">${cat === '全部' ? '📂 全部' : cat}</a>`;
+        }
     }
+    footerNav.innerHTML = html;
+
+    // 绑定事件
+    footerNav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function() {
+            if (currentMode === 'sequential') {
+                const idx = parseInt(this.dataset.index);
+                if (!isNaN(idx) && idx >= 0 && idx < filteredData.length) {
+                    currentPage = idx;
+                    renderPage();
+                }
+            } else {
+                const cat = this.dataset.category;
+                if (cat) {
+                    currentCategory = cat;
+                    filteredData = getFilteredData('categorical', currentCategory);
+                    currentPage = 0;
+                    renderPage();
+                    renderFooterNav();
+                }
+            }
+        });
+    });
+}
 
     function updateFooterNav() {
         // 简单刷新底部导航高亮
